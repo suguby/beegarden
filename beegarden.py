@@ -10,7 +10,6 @@ import time
 import os
 
 SCREENRECT = None
-_revolvable = 0
 _max_layers = 5
 _sprites_by_layer = [pygame.sprite.Group() for i in range(_max_layers + 1)]
 _sprites_count = 0
@@ -29,7 +28,7 @@ class MshpSprite(pygame.sprite.DirtySprite):
     radius = 1
     speed = 3
 
-    def __init__(self, pos=None, revolvable=None):
+    def __init__(self, pos=None):
         """Создать объект в указанном месте"""
 
         if self._layer > _max_layers:
@@ -59,11 +58,6 @@ class MshpSprite(pygame.sprite.DirtySprite):
         self.load_value = 0
         self.load_value_px = 0
 
-        if revolvable is None:
-            self.revolvable = _revolvable
-        else:
-            self.revolvable = revolvable
-
         global _sprites_count
         _sprites_count += 1
         self._id = _sprites_count
@@ -90,30 +84,12 @@ class MshpSprite(pygame.sprite.DirtySprite):
 
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
-        if self.revolvable:
-            if self.is_turning:
-                delta = self.vector.angle - self.course
-                if abs(delta) < _course_step:
-                    self.course = self.vector.angle
-                    self.is_turning = False
-                else:
-                    if delta < 0:
-                        self.course -= _course_step
-                    else:
-                        self.course += _course_step
-                old_center = self.rect.center
-                self.image = pygame.transform.rotate(self.images[0], self.course)
-                self.rect = self.image.get_rect()
-                self.rect.center = old_center
-
+        if self.vector.dx >= 0:
+            self.image = self.images[1].copy()
         else:
-            self.is_turning = False
-            if self.vector.dx >= 0:
-                self.image = self.images[1].copy()
-            else:
-                self.image = self.images[0].copy()
+            self.image = self.images[0].copy()
         #print self.course, self.vector.angle
-        if self.is_moving and not self.is_turning:
+        if self.is_moving:
             self.coord.add(self.vector)
             self.rect.center = self.coord.to_screen()
             if self.coord.near(self.target_coord):
@@ -132,18 +108,12 @@ class MshpSprite(pygame.sprite.DirtySprite):
                 self.rect.left = SCREENRECT.left
             if self.rect.right > SCREENRECT.right:
                 self.rect.right = SCREENRECT.right
-            self.is_moving = False
-
-    def turn_to(self, direction):
-        self.vector = Vector(direction=direction, module=0)
-        self.is_turning = True
-        self.is_moving = False
+            self.stop()
 
     def move(self, direction):
         """ Задать движение в направлении <угол в градусах>, <скорость> """
         self.vector = Vector(direction=direction, module=self.speed)
         self.is_moving = True
-        self.is_turning = True
 
     def move_at(self, target):
         """ Задать движение к указанной точке <объект/точка/координаты>, <скорость> """
@@ -158,12 +128,10 @@ class MshpSprite(pygame.sprite.DirtySprite):
         self.target_coord = target
         self.vector = Vector(point1=self.coord, point2=self.target_coord, module=self.speed)
         self.is_moving = True
-        self.is_turning = True
 
     def stop(self):
         """ Остановить объект """
         self.is_moving = False
-        self.is_turning = False
 
     def on_stop_at_target(self):
         """Обработчик события 'остановка у цели' """
