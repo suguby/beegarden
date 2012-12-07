@@ -11,7 +11,6 @@ import os
 
 SCREENRECT = None
 _revolvable = 0
-_determine_collisions = 0
 _max_layers = 5
 _sprites_by_layer = [pygame.sprite.Group() for i in range(_max_layers + 1)]
 _sprites_count = 0
@@ -120,22 +119,6 @@ class MshpSprite(pygame.sprite.DirtySprite):
             if self.coord.near(self.target_coord):
                 self.stop()
                 self.on_stop_at_target()
-            if _determine_collisions:
-                collisions = pygame.sprite.spritecollide(self, _sprites_by_layer[self._layer], 0, collide_circle)
-                if len(collisions) > 1:
-                    #print collisions
-                    for sprite in collisions:
-                        if sprite._id == self._id:  # исключаем себя
-                            continue
-                        #~ print self._id, self.coord, sprite.coord, self.distance_to(sprite)
-                        step_back_distance = (self.radius + sprite.radius) - self.distance_to(sprite)
-                            # (self.radius + sprite.radius) - () +1
-                        step_back_vector = Vector(sprite, self, module=step_back_distance)
-                        #~ print self.vector, step_back_vector
-
-                        #~ step_back_vector = Vector(dx = -self.vector.dx, dy = -self.vector.dy )
-                        self.coord.add(step_back_vector)
-                        self.stop()
 
         if self.load_value_px:
             pygame.draw.line(self.image, (0, 255, 7), (0, 0), (self.load_value_px, 0), 3)
