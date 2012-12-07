@@ -52,7 +52,6 @@ class MshpSprite(pygame.sprite.DirtySprite):
         self.vector = Vector()
         self.is_moving = False
         self.course = self.vector.angle
-        self.is_turning = False
         self.shot = False
 
         self.load_value = 0
@@ -92,7 +91,7 @@ class MshpSprite(pygame.sprite.DirtySprite):
         if self.is_moving:
             self.coord.add(self.vector)
             self.rect.center = self.coord.to_screen()
-            if self.coord.near(self.target_coord):
+            if self.near(self.target_coord):
                 self.stop()
                 self.on_stop_at_target()
 
@@ -451,7 +450,7 @@ class Point():
         """Расстояние до другой точки"""
         return sqrt(pow(self.x - point2.x, 2) + pow(self.y - point2.y, 2))
 
-    def near(self, point2, radius=5):
+    def near(self, point2, radius=NEAR_RADIUS):
         """Признак расположения рядом с другой точкой, рядом - это значит ближе, чем радиус"""
         return self.distance_to(point2) < radius
 
