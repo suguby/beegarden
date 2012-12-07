@@ -390,11 +390,11 @@ class Scene:
             if min_disance > 50:
                 self.flowers.append(Flower(pos))
 
-        if speed > NEAR_RADIUS / 2.0:
-            speed = int(NEAR_RADIUS / 2.0)
+        if speed > NEAR_RADIUS:
+            speed = NEAR_RADIUS
         MshpSprite.speed = speed
 
-        honey_speed = speed / 2.0
+        honey_speed = int(speed / 2.0)
         if honey_speed < 1:
             honey_speed = 1
         HoneyHolder.honey_speed = honey_speed
@@ -707,7 +707,7 @@ def random_point():
 if __name__ == '__main__':
 
     game = GameEngine("test", resolution=(700, 700))
-    scene = Scene(beehives_count=2, flowers_count=40, speed=10)
+    scene = Scene(beehives_count=2, flowers_count=40, speed=40)
 
     class MyBee(Bee):
         my_beehave = scene.beehives[0]
