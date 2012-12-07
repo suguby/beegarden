@@ -10,15 +10,10 @@ import time
 import os
 
 SCREENRECT = None
-_max_layers = 5
-_sprites_by_layer = [pygame.sprite.Group() for i in range(_max_layers + 1)]
-_sprites_count = 0
-_course_step = 5
+MAX_LAYERS = 3
+SPRITES_GROUPS = [pygame.sprite.Group() for i in range(MAX_LAYERS + 1)]
 NEAR_RADIUS = 20
-
-
-def collide_circle(left, right):
-    return left.distance_to(right) <= left.radius + right.radius
+RANDOM_POINT_BORDER = 42
 
 
 class MshpSprite(pygame.sprite.DirtySprite):
@@ -27,15 +22,16 @@ class MshpSprite(pygame.sprite.DirtySprite):
     _layer = 0
     radius = 1
     speed = 3
+    _sprites_count = 0
 
     def __init__(self, pos=None):
         """Создать объект в указанном месте"""
 
-        if self._layer > _max_layers:
-            self._layer = _max_layers
+        if self._layer > MAX_LAYERS:
+            self._layer = MAX_LAYERS
         if self._layer < 0:
             self._layer = 0
-        self.containers = self.containers, _sprites_by_layer[self._layer]
+        self.containers = self.containers, SPRITES_GROUPS[self._layer]
         pygame.sprite.Sprite.__init__(self, self.containers)
 
         self.image = load_image(self._img_file_name, -1)
@@ -57,9 +53,8 @@ class MshpSprite(pygame.sprite.DirtySprite):
         self.load_value = 0
         self.load_value_px = 0
 
-        global _sprites_count
-        _sprites_count += 1
-        self._id = _sprites_count
+        MshpSprite._sprites_count += 1
+        self._id = MshpSprite._sprites_count
 
     def __str__(self):
         return 'sprite %s: %s %s %s %s' % (self._id, self.coord, self.vector, self.is_moving, self.is_turning)
@@ -147,18 +142,6 @@ class MshpSprite(pygame.sprite.DirtySprite):
     def near(self, obj, radius=NEAR_RADIUS):
         """ Проверка близости к объекту <объект/точка>"""
         return self.distance_to(obj) <= radius
-
-    def near_edge(self):
-        """ Проверка близости к краю экрана """
-        if self.coord.x <= self.w // 2:
-            return 'left'
-        if self.coord.x >= SCREENRECT.width - self.w // 2:
-            return 'right'
-        if self.coord.y <= self.h // 2:
-            return 'bottom'
-        if self.coord.y >= SCREENRECT.height - self.h // 2:
-            return 'top'
-        return False
 
 
 class HoneyHolder():
@@ -365,16 +348,11 @@ class Scene:
     """Сцена игры. Содержит статичные элементы"""
 
     def __init__(self, flowers_count=5, beehives_count=1, speed=5):
+        self._place_beehives(beehives_count)
+        self._place_flowers(flowers_count)
+        self._set_game_speed(speed)
 
-        if beehives_count in (1, 2):
-            self.beehives = []
-            self.beehive = BeeHive(pos=(90, 75))
-            self.beehives.append(self.beehive)
-            if beehives_count == 2:
-                self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75)))
-        else:
-            raise Exception("Only 2 beehives!")
-
+    def _place_flowers(self, flowers_count):
         left_bottom = Point(100, 200)
         top_right = Point(SCREENRECT.width - 100, SCREENRECT.height - 60)
         self.flowers = []
@@ -390,10 +368,20 @@ class Scene:
             if min_disance > 50:
                 self.flowers.append(Flower(pos))
 
+    def _place_beehives(self, beehives_count):
+        if beehives_count in (1, 2):
+            self.beehives = []
+            self.beehive = BeeHive(pos=(90, 75))
+            self.beehives.append(self.beehive)
+            if beehives_count == 2:
+                self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75)))
+        else:
+            raise Exception("Only 2 beehives!")
+
+    def _set_game_speed(self, speed):
         if speed > NEAR_RADIUS:
             speed = NEAR_RADIUS
         MshpSprite.speed = speed
-
         honey_speed = int(speed / 2.0)
         if honey_speed < 1:
             honey_speed = 1
@@ -666,11 +654,10 @@ class Fps(pygame.sprite.DirtySprite):
 
 class HoneyMeter(pygame.sprite.DirtySprite):
     """Отображение кол-ва мёда"""
-    _layer = 5
+    _layer = MAX_LAYERS
 
     def __init__(self, pos, color=(255, 255, 0)):
-        """Создать индикатор FPS"""
-        self.containers = self.containers, _sprites_by_layer[self._layer]
+        self.containers = self.containers, SPRITES_GROUPS[self._layer]
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.font = pygame.font.Font(None, 27)
         self.color = color
@@ -692,11 +679,10 @@ def random_number(a=0, b=300):
     """
     return random.randint(a, b)
 
-_random_point_border = 42
 
 
 def _get_random_coordinate(high):
-    return random_number(_random_point_border, high - _random_point_border)
+    return random_number(RANDOM_POINT_BORDER, high - RANDOM_POINT_BORDER)
 
 
 def random_point():
