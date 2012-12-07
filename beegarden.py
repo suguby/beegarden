@@ -13,7 +13,7 @@ SCREENRECT = None
 _revolvable = 0
 _determine_collisions = 0
 _max_layers = 5
-_sprites_by_layer = [ pygame.sprite.Group() for i in range(_max_layers+1) ]
+_sprites_by_layer = [pygame.sprite.Group() for i in range(_max_layers + 1)]
 _sprites_count = 0
 _course_step = 5
 NEAR_RADIUS = 20
@@ -22,6 +22,7 @@ NEAR_RADIUS = 20
 def collide_circle(left, right):
     return left.distance_to(right) <= left.radius + right.radius
 
+
 class MshpSprite(pygame.sprite.DirtySprite):
     """Класс отображения объектов на экране"""
     _img_file_name = 'empty.png'
@@ -29,16 +30,18 @@ class MshpSprite(pygame.sprite.DirtySprite):
     radius = 1
     speed = 3
 
-    def __init__(self, pos = None, revolvable = None):
+    def __init__(self, pos=None, revolvable=None):
         """Создать объект в указанном месте"""
 
-        if self._layer > _max_layers: self._layer = _max_layers
-        if self._layer < 0: self._layer = 0
-        self.containers = self.containers, _sprites_by_layer[ self._layer ]
-        pygame.sprite.Sprite.__init__(self, self.containers) 
+        if self._layer > _max_layers:
+            self._layer = _max_layers
+        if self._layer < 0:
+            self._layer = 0
+        self.containers = self.containers, _sprites_by_layer[self._layer]
+        pygame.sprite.Sprite.__init__(self, self.containers)
 
         self.image = load_image(self._img_file_name, -1)
-        self.images = [self.image, pygame.transform.flip(self.image, 1, 0) ]
+        self.images = [self.image, pygame.transform.flip(self.image, 1, 0)]
         self.rect = self.image.get_rect()
 
         if pos is None:
@@ -53,35 +56,38 @@ class MshpSprite(pygame.sprite.DirtySprite):
         self.course = self.vector.angle
         self.is_turning = False
         self.shot = False
-        
+
         self.load_value = 0
         self.load_value_px = 0
-        
+
         if revolvable is None:
             self.revolvable = _revolvable
-        else:    
+        else:
             self.revolvable = revolvable
-            
+
         global _sprites_count
         _sprites_count += 1
         self._id = _sprites_count
 
     def __str__(self):
-        return 'sprite %s: %s %s %s %s'% (self._id, self.coord, self.vector, self.is_moving, self.is_turning)
+        return 'sprite %s: %s %s %s %s' % (self._id, self.coord, self.vector, self.is_moving, self.is_turning)
+
     def __repr__(self):
         return str(self)
-        
-    x = property(lambda self: self.coord.int_x, doc="текущая позиция X объекта" )
-    y = property(lambda self: self.coord.int_y, doc="текущая позиция Y объекта" )
+
+    x = property(lambda self: self.coord.int_x, doc="текущая позиция X объекта")
+    y = property(lambda self: self.coord.int_y, doc="текущая позиция Y объекта")
     w = property(lambda self: self.rect.width, doc="ширина спрайта")
     h = property(lambda self: self.rect.height, doc="высота спрайта")
 
     def _set_load(self, value):
         """Внутренняя, установить бар загрузки"""
-        if value > 100: value = 100
-        if value < 0: value = 0
+        if value > 100:
+            value = 100
+        if value < 0:
+            value = 0
         self.load_value = value
-        self.load_value_px =  int( (value/100.0)*self.w )
+        self.load_value_px = int((value / 100.0) * self.w)
 
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
@@ -97,10 +103,10 @@ class MshpSprite(pygame.sprite.DirtySprite):
                     else:
                         self.course += _course_step
                 old_center = self.rect.center
-                self.image = pygame.transform.rotate( self.images[0], self.course )
+                self.image = pygame.transform.rotate(self.images[0], self.course)
                 self.rect = self.image.get_rect()
                 self.rect.center = old_center
-                
+
         else:
             self.is_turning = False
             if self.vector.dx >= 0:
@@ -109,29 +115,30 @@ class MshpSprite(pygame.sprite.DirtySprite):
                 self.image = self.images[0].copy()
         #print self.course, self.vector.angle
         if self.is_moving and not self.is_turning:
-            self.coord.add( self.vector )
+            self.coord.add(self.vector)
             self.rect.center = self.coord.to_screen()
-            if self.coord.near( self.target_coord ):
+            if self.coord.near(self.target_coord):
                 self.stop()
                 self.on_stop_at_target()
             if _determine_collisions:
-                collisions = pygame.sprite.spritecollide(self, _sprites_by_layer[ self._layer ], 0, collide_circle ) 
+                collisions = pygame.sprite.spritecollide(self, _sprites_by_layer[self._layer], 0, collide_circle)
                 if len(collisions) > 1:
                     #print collisions
-                    for sprite in collisions: 
-                        if sprite._id == self._id: # исключаем себя
+                    for sprite in collisions:
+                        if sprite._id == self._id:  # исключаем себя
                             continue
                         #~ print self._id, self.coord, sprite.coord, self.distance_to(sprite)
-                        step_back_distance = (self.radius + sprite.radius) - self.distance_to(sprite) # (self.radius + sprite.radius) - () +1
-                        step_back_vector = Vector(sprite, self, module = step_back_distance)
+                        step_back_distance = (self.radius + sprite.radius) - self.distance_to(sprite)
+                            # (self.radius + sprite.radius) - () +1
+                        step_back_vector = Vector(sprite, self, module=step_back_distance)
                         #~ print self.vector, step_back_vector
 
                         #~ step_back_vector = Vector(dx = -self.vector.dx, dy = -self.vector.dy )
-                        self.coord.add( step_back_vector )
+                        self.coord.add(step_back_vector)
                         self.stop()
 
         if self.load_value_px:
-            pygame.draw.line(self.image, (0,255,7), (0,0), (self.load_value_px,0), 3)
+            pygame.draw.line(self.image, (0, 255, 7), (0, 0), (self.load_value_px, 0), 3)
 
         if not SCREENRECT.contains(self.rect):
             if self.rect.top < SCREENRECT.top:
@@ -145,28 +152,28 @@ class MshpSprite(pygame.sprite.DirtySprite):
             self.is_moving = False
 
     def turn_to(self, direction):
-        self.vector = Vector(direction = direction, module = 0)
+        self.vector = Vector(direction=direction, module=0)
         self.is_turning = True
         self.is_moving = False
 
     def move(self, direction):
         """ Задать движение в направлении <угол в градусах>, <скорость> """
-        self.vector = Vector(direction = direction, module = self.speed)
+        self.vector = Vector(direction=direction, module=self.speed)
         self.is_moving = True
         self.is_turning = True
 
     def move_at(self, target):
         """ Задать движение к указанной точке <объект/точка/координаты>, <скорость> """
-        if type(target) in ( type(()), type([]) ):
-            target = Point( target )
+        if type(target) in (type(()), type([])):
+            target = Point(target)
         elif isinstance(target, Point):
             pass
         elif isinstance(target, MshpSprite):
             target = target.coord
         else:
-            raise Exception("move_at: target %s must be coord or point or sprite!"%target)
+            raise Exception("move_at: target %s must be coord or point or sprite!" % target)
         self.target_coord = target
-        self.vector = Vector(point1 = self.coord, point2 = self.target_coord, module = self.speed)
+        self.vector = Vector(point1=self.coord, point2=self.target_coord, module=self.speed)
         self.is_moving = True
         self.is_turning = True
 
@@ -174,7 +181,7 @@ class MshpSprite(pygame.sprite.DirtySprite):
         """ Остановить объект """
         self.is_moving = False
         self.is_turning = False
-        
+
     def on_stop_at_target(self):
         """Обработчик события 'остановка у цели' """
         pass
@@ -182,10 +189,10 @@ class MshpSprite(pygame.sprite.DirtySprite):
     def distance_to(self, obj):
         """ Расстояние до объекта <объект/точка>"""
         if isinstance(obj, MshpSprite):
-            return self.coord.distance_to( obj.coord )
+            return self.coord.distance_to(obj.coord)
         if isinstance(obj, Point):
-            return self.coord.distance_to( obj )
-        raise Exception("sprite.distance_to: obj %s must be Sprite or Point!" % ( obj ) )
+            return self.coord.distance_to(obj)
+        raise Exception("sprite.distance_to: obj %s must be Sprite or Point!" % obj)
 
     def near(self, obj, radius=NEAR_RADIUS):
         """ Проверка близости к объекту <объект/точка>"""
@@ -193,13 +200,13 @@ class MshpSprite(pygame.sprite.DirtySprite):
 
     def near_edge(self):
         """ Проверка близости к краю экрана """
-        if self.coord.x <= self.w//2:
+        if self.coord.x <= self.w // 2:
             return 'left'
-        if self.coord.x >= SCREENRECT.width - self.w//2:
+        if self.coord.x >= SCREENRECT.width - self.w // 2:
             return 'right'
-        if self.coord.y <= self.h//2:
+        if self.coord.y <= self.h // 2:
             return 'bottom'
-        if self.coord.y >= SCREENRECT.height - self.h//2:
+        if self.coord.y >= SCREENRECT.height - self.h // 2:
             return 'top'
         return False
 
@@ -207,16 +214,16 @@ class MshpSprite(pygame.sprite.DirtySprite):
 class HoneyHolder():
     """Класс объекта, который может нести мёд"""
     honey_speed = 1
-    
+
     def __init__(self, honey_loaded, honey_max):
         """Задать начальние значения: honey_loaded - сколько изначально мёда, honey_max - максимум"""
         self._honey = honey_loaded
         self._honey_max = honey_max
-        
+
         self._source = None
         self._target = None
         self._state = 'stop'
-        
+
         self._set_load_hh()
 
     honey = property(lambda self: self._honey, doc="""Количество мёда у объекта""")
@@ -238,11 +245,11 @@ class HoneyHolder():
         """Разгрузить мёд в ... """
         self._target = target
         self._state = 'unloading'
-        
+
     def is_full(self):
         """полностью заполнен?"""
         return self.honey >= self._honey_max
-        
+
     def _update(self):
         """Внутренняя функция для обновления переменных отображения"""
         if self._state == 'moving':
@@ -295,15 +302,16 @@ class HoneyHolder():
 
     def _set_load_hh(self):
         """Внутренняя функция отрисовки бара"""
-        load_value = int( (self._honey / self._honey_max) * 100.0 )
+        load_value = int((self._honey / self._honey_max) * 100.0)
         MshpSprite._set_load(self, load_value)
+
 
 class Bee(MshpSprite, HoneyHolder):
     """Пчела. Может летать по экрану и носить мёд."""
     _img_file_name = 'bee.png'
     _layer = 2
 
-    def __init__(self, pos = None):
+    def __init__(self, pos=None):
         """создать пчелу в указанной точке экрана"""
         MshpSprite.__init__(self, pos)
         self.speed = float(self.speed) - random.random()
@@ -336,7 +344,7 @@ class Bee(MshpSprite, HoneyHolder):
             self.on_stop_at_beehive(self.target)
         else:
             pass
-            
+
     def on_born(self):
         """Обработчик события 'рождение' """
         pass
@@ -354,11 +362,11 @@ class BeeHive(MshpSprite, HoneyHolder):
     """Улей. Стоит там где поставили и содержит мёд."""
     _img_file_name = 'beehive.png'
 
-    def __init__(self, pos = None):
+    def __init__(self, pos=None):
         """создать улей в указанной точке экрана"""
         MshpSprite.__init__(self, pos)
         HoneyHolder.__init__(self, 0, 4000)
-        self.hm = HoneyMeter( pos=(pos[0] - 24, pos[1] - 37) )
+        self.hm = HoneyMeter(pos=(pos[0] - 24, pos[1] - 37))
 
     def move(self, direction):
         """Заглушка - улей не может двигаться"""
@@ -374,12 +382,13 @@ class BeeHive(MshpSprite, HoneyHolder):
         HoneyHolder._update(self)
         MshpSprite.update(self)
 
+
 class Flower(MshpSprite, HoneyHolder):
     """Цветок. Источник мёда."""
     _img_file_name = 'romashka.png'
 
-    def __init__(self, pos = None):
-        """Создать цветок в указанном месте. 
+    def __init__(self, pos=None):
+        """Создать цветок в указанном месте.
         Если не указано - то в произвольном месте в квадрате ((200,200),(край экрана - 50,край экрана - 50))"""
         if not pos:
             pos = (random.randint(200, SCREENRECT.width - 50), random.randint(200, SCREENRECT.height - 50))
@@ -400,11 +409,12 @@ class Flower(MshpSprite, HoneyHolder):
         HoneyHolder._update(self)
         MshpSprite.update(self)
 
-class Scene:    
+
+class Scene:
     """Сцена игры. Содержит статичные элементы"""
-    
+
     def __init__(self, flowers_count=5, beehives_count=1, speed=5):
-        
+
         if beehives_count > 2:
             beehives_count = 2
         self.beehives = []
@@ -413,7 +423,7 @@ class Scene:
                 x = SCREENRECT.width - 90
             else:
                 x = 90
-            self.beehives.append( BeeHive( pos=(x,75) ) )
+            self.beehives.append(BeeHive(pos=(x, 75)))
         self.beehive = self.beehives[0]
 
         left_bottom = Point(50, 200)
@@ -429,10 +439,10 @@ class Scene:
                 if min_disance > distance:
                     min_disance = distance
             if min_disance > 50:
-                self.flowers.append( Flower(pos) )
+                self.flowers.append(Flower(pos))
 
-        if speed > NEAR_RADIUS/2.0:
-            speed = int(NEAR_RADIUS/2.0)
+        if speed > NEAR_RADIUS / 2.0:
+            speed = int(NEAR_RADIUS / 2.0)
         MshpSprite.speed = speed
 
         honey_speed = speed / 2.0
@@ -448,29 +458,30 @@ def load_image(name, colorkey=None):
         image = pygame.image.load(fullname)
     except pygame.error, message:
         print "Cannot load image:", name
-        raise SystemExit, message
+        raise SystemExit(message)
         #image = image.convert()
     if colorkey is not None:
         if colorkey is -1:
-            colorkey = image.get_at((0,0))
+            colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey, RLEACCEL)
     return image
+
 
 class Point():
     """Класс точки на экране"""
 
-    int_x = property(lambda self: round(self.x), doc="Округленная до пиксела координата X" )
-    int_y = property(lambda self: round(self.y), doc="Округленная до пиксела координата Y" )
+    int_x = property(lambda self: round(self.x), doc="Округленная до пиксела координата X")
+    int_y = property(lambda self: round(self.y), doc="Округленная до пиксела координата Y")
 
     def __init__(self, arg1=0, arg2=0):
         """Создать точку. Можно создать из другой точки, из списка/тьюпла или из конкретных координат"""
-        try: # arg1 is Point
+        try:  # arg1 is Point
             self.x = arg1.x
             self.y = arg1.y
-        except:
-            try: # arg1 is tuple or list
+        except all:
+            try:  # arg1 is tuple or list
                 self.x, self.y = arg1
-            except: # arg1 & arg2 is numeric
+            except all:  # arg1 & arg2 is numeric
                 self.x, self.y = arg1, arg2
 
     def to_screen(self):
@@ -484,13 +495,13 @@ class Point():
 
     def sub(self, vector):
         """Вычесть вектор - точка смещается на "минус" вектор"""
-        self.add( -vector) 
+        self.add(-vector)
 
     def distance_to(self, point2):
         """Расстояние до другой точки"""
-        return sqrt( pow(self.x - point2.x, 2) + pow(self.y - point2.y, 2) )
+        return sqrt(pow(self.x - point2.x, 2) + pow(self.y - point2.y, 2))
 
-    def near(self, point2, radius = 5):
+    def near(self, point2, radius=5):
         """Признак расположения рядом с другой точкой, рядом - это значит ближе, чем радиус"""
         return self.distance_to(point2) < radius
 
@@ -501,10 +512,11 @@ class Point():
         if self.int_x == point2.int_x and self.int_y == point2.int_y:
             return True
         return False
-        
+
     def __str__(self):
         """Преобразование к строке"""
-        return 'point(%s,%s)'% (self.x, self.y)
+        return 'point(%s,%s)' % (self.x, self.y)
+
     def __repr__(self):
         """Представление """
         return str(self)
@@ -512,7 +524,7 @@ class Point():
     def __iter__(self):
         yield self.x
         yield self.y
-    
+
     def __getitem__(self, ind):
         if ind:
             return self.y
@@ -522,38 +534,41 @@ class Point():
         if self.x and self.y:
             return 1
         return 0
-    
+
+
 class Vector():
     """Класс математического вектора"""
-    
-    def __init__(self, point1 = None, point2 = None, direction = None, module = None, dx = None, dy = None ):
-        """Создать вектор. Можно создать из двух точек (длинной в модуль, если указан), а можно указать направление и модуль вектора."""
+
+    def __init__(self, point1=None, point2=None, direction=None, module=None, dx=None, dy=None):
+        """
+        Создать вектор. Можно создать из двух точек (длинной в модуль, если указан),
+        а можно указать направление и модуль вектора.
+        """
         self.dx = 0
         self.dy = 0
 
         if dx and dy:
-            self.dx, self.dy = dx, dy  
-        elif point1 or point2: # если заданы точки
+            self.dx, self.dy = dx, dy
+        elif point1 or point2:  # если заданы точки
             if not point1:
-                point1 = Point(0,0)
+                point1 = Point(0, 0)
             if not point2:
-                point2 = Point(0,0)
+                point2 = Point(0, 0)
             self.dx = float(point2.x - point1.x)
             self.dy = float(point2.y - point1.y)
-        elif direction: # ... или задано направление
-            direction = (direction*pi)/180
+        elif direction:  # ... или задано направление
+            direction = (direction * pi) / 180
             self.dx = sin(direction)
             self.dy = cos(direction)
 
         self.module = self._determine_module()
-        if module: # если задана длина вектора, то ограничиваем себя :)
+        if module:  # если задана длина вектора, то ограничиваем себя :)
             if self.module:
-                self.dx *= module/self.module
-                self.dy *= module/self.module
+                self.dx *= module / self.module
+                self.dy *= module / self.module
             self.module = module
 
         self.angle = self._determine_angle()
-        
 
     def add(self, vector2):
         """Сложение векторов"""
@@ -563,7 +578,7 @@ class Vector():
         self.angle = self._determine_angle()
 
     def _determine_module(self):
-        return sqrt(self.dx*self.dx + self.dy*self.dy)
+        return sqrt(self.dx * self.dx + self.dy * self.dy)
 
     def _determine_angle(self):
         angle = 0
@@ -573,14 +588,15 @@ class Vector():
             else:
                 return  270
         else:
-            angle = atan( self.dy / self.dx ) * (180/pi)
+            angle = atan(self.dy / self.dx) * (180 / pi)
             #print self.dx, self.dy, angle
             if self.dx < 0:
                 angle += 180
         return angle
-        
+
     def __str__(self):
-        return 'vector([%.2f,%.2f],{%.2f,%.2f})'% (self.dx, self.dy, self.angle, self.module)
+        return 'vector([%.2f,%.2f],{%.2f,%.2f})' % (self.dx, self.dy, self.angle, self.module)
+
     def __repr__(self):
         return str(self)
 
@@ -589,7 +605,8 @@ class Vector():
         return int(self.module)
 
     def __neg__(self):
-        return Vector( dx = -self.dx, dy = -self.dy)
+        return Vector(dx=-self.dx, dy=-self.dy)
+
 
 class GameEngine:
     """Игровой движок. Выполняет все функции по отображению спрайтов и взаимодействия с пользователем"""
@@ -597,20 +614,20 @@ class GameEngine:
     def __init__(self, name, background_color=None, max_fps=60, resolution=None):
         """Создать игру. """
         global SCREENRECT
-        
+
         pygame.init()
         if background_color is None:
             background_color = (87, 144, 40)
         if resolution is None:
             resolution = (1024, 768)
         SCREENRECT = Rect((0, 0), resolution)
-        self.screen = pygame.display.set_mode( SCREENRECT.size )
-        pygame.display.set_caption( name )
+        self.screen = pygame.display.set_mode(SCREENRECT.size)
+        pygame.display.set_caption(name)
 
-        self.background = pygame.Surface(self.screen.get_size()) # и ее размер
+        self.background = pygame.Surface(self.screen.get_size())  # и ее размер
         self.background = self.background.convert()
-        self.background.fill(background_color) # заполняем цветом
-        self.screen.blit(self.background, (0,0))
+        self.background.fill(background_color)  # заполняем цветом
+        self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
 
         self.all = pygame.sprite.LayeredUpdates()
@@ -618,17 +635,16 @@ class GameEngine:
         Fps.containers = self.all
         HoneyMeter.containers = self.all
 
-
         global clock
         clock = pygame.time.Clock()
-        self.fps_meter = Fps( color=(255,255,0) ) 
+        self.fps_meter = Fps(color=(255, 255, 0))
         self.max_fps = max_fps
 
         self.debug = False
 
     def go(self):
         """Выполнение игрового цикла: рассчет позиций спрайтов и отрисовка их не экране"""
-        
+
         one_step = False
         for event in pygame.event.get():
             if (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -640,7 +656,7 @@ class GameEngine:
                 self.debug = not self.debug
             if event.type == KEYDOWN and event.key == K_s:
                 one_step = True
-        
+
         if self.debug and not one_step:
             return True
 
@@ -670,7 +686,7 @@ class Fps(pygame.sprite.DirtySprite):
     """Отображение FPS игры"""
     _layer = 5
 
-    def __init__(self, color = (255,255,255)):
+    def __init__(self, color=(255, 255, 255)):
         """Создать индикатор FPS"""
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.show = False
@@ -678,7 +694,7 @@ class Fps(pygame.sprite.DirtySprite):
         self.color = color
         self.image = self.font.render('-', 0, self.color)
         self.rect = self.image.get_rect()
-        self.rect = self.rect.move(SCREENRECT.width - 100,10)
+        self.rect = self.rect.move(SCREENRECT.width - 100, 10)
         self.fps = []
 
     def update(self):
@@ -691,16 +707,17 @@ class Fps(pygame.sprite.DirtySprite):
             fps = sum(self.fps) / len(self.fps)
             msg = '%5.0f FPS' % fps
         else:
-            msg=''
+            msg = ''
         self.image = self.font.render(msg, 1, self.color)
+
 
 class HoneyMeter(pygame.sprite.DirtySprite):
     """Отображение кол-ва мёда"""
     _layer = 5
 
-    def __init__(self, pos, color = (255,255,0)):
+    def __init__(self, pos, color=(255, 255, 0)):
         """Создать индикатор FPS"""
-        self.containers = self.containers, _sprites_by_layer[ self._layer ]
+        self.containers = self.containers, _sprites_by_layer[self._layer]
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.font = pygame.font.Font(None, 27)
         self.color = color
@@ -724,6 +741,7 @@ def random_number(a=0, b=300):
 
 _random_point_border = 42
 
+
 def _get_random_coordinate(high):
     return random_number(_random_point_border, high - _random_point_border)
 
@@ -735,7 +753,6 @@ def random_point():
     x = _get_random_coordinate(SCREENRECT.width)
     y = _get_random_coordinate(SCREENRECT.height)
     return Point(x, y)
-
 
 
 if __name__ == '__main__':
@@ -750,8 +767,7 @@ if __name__ == '__main__':
             nearest_flower = None
             for flower in scene.flowers:
                 if flower.honey > 0:
-                    if nearest_flower is None or \
-                       self.distance_to(flower) < self.distance_to(nearest_flower):
+                    if nearest_flower is None or self.distance_to(flower) < self.distance_to(nearest_flower):
                         nearest_flower = flower
             return nearest_flower
 
@@ -808,9 +824,8 @@ if __name__ == '__main__':
                         nearest_flower = flower
             return nearest_flower
 
-
-    bees = [ MyBee(pos=Point(100, 100)) for i in range(10) ]
-    bees_2 = [ SecondBee(pos=scene.beehives[1].coord) for i in range(10) ]
+    bees = [MyBee(pos=Point(100, 100)) for i in range(10)]
+    bees_2 = [SecondBee(pos=scene.beehives[1].coord) for i in range(10)]
 
     while game.go():
         pass
