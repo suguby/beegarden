@@ -151,6 +151,8 @@ class HoneyHolder():
     def __init__(self, honey_loaded, honey_max):
         """Задать начальние значения: honey_loaded - сколько изначально мёда, honey_max - максимум"""
         self._honey = honey_loaded
+        if honey_max == 0:
+            raise Exception("honey_max cant be zero!")
         self._honey_max = honey_max
 
         self._source = None
@@ -400,7 +402,9 @@ class Scene:
         if beehives_count in (1, 2):
             if beehives_count == 2:
                 max_honey /= 2.0
-            max_honey = int((max_honey / 1000.0) * 1.3) * 1000
+            max_honey = int(round((max_honey / 1000.0) * 1.3)) * 1000
+            if max_honey < 1000:
+                max_honey = 1000
             self.beehives = []
             self.beehive = BeeHive(pos=(90, 75), max_honey=max_honey)
             self.beehives.append(self.beehive)
@@ -728,7 +732,7 @@ def random_point():
 if __name__ == '__main__':
 
     game = GameEngine("test", resolution=(500, 500))
-    scene = Scene(beehives_count=2, flowers_count=20, speed=40)
+    scene = Scene(beehives_count=2, flowers_count=10, speed=40)
 
     class MyBee(Bee):
         my_beehave = scene.beehives[0]
