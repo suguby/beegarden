@@ -615,20 +615,14 @@ class GameEngine:
         self.debug = False
 
     def _draw_scene(self):
+        # TODO ускорить через начальную отрисовку всех цветков и ульев в бакграунд
         # clear/erase the last drawn sprites
         self.all.clear(self.screen, self.background)
-        #self.flower.clear(self.screen, self.background)
-        #self.others.clear(self.screen, self.background)
         #update all the sprites
         self.all.update()
         #draw the scene
         dirty = self.all.draw(self.screen)
-        #pygame.draw.circle(self.screen, (0,0,0), flower_point.to_screen(), 20, 3) # отладка вывода положения цветка
         pygame.display.update(dirty)
-        #dirty = self.flower.draw(self.screen)
-        #pygame.display.update(dirty)
-        #dirty = self.others.draw(self.screen)
-        #pygame.display.update(dirty)
         #cap the framerate
         clock.tick(self.max_fps)
 
