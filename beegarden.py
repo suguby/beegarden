@@ -236,7 +236,7 @@ class HoneyHolder():
 
     def _set_load_hh(self):
         """Внутренняя функция отрисовки бара"""
-        load_value = int((self._honey / self._honey_max) * 100.0)
+        load_value = int((float(self._honey) / self._honey_max) * 100.0)
         MshpSprite._set_load(self, load_value)
 
 
@@ -296,10 +296,10 @@ class BeeHive(MshpSprite, HoneyHolder):
     """Улей. Стоит там где поставили и содержит мёд."""
     _img_file_name = 'beehive.png'
 
-    def __init__(self, pos=None):
+    def __init__(self, pos=None, max_honey=4000):
         """создать улей в указанной точке экрана"""
         MshpSprite.__init__(self, pos)
-        HoneyHolder.__init__(self, 0, 4000)
+        HoneyHolder.__init__(self, 0, max_honey)
         self.hm = HoneyMeter(pos=(pos[0] - 24, pos[1] - 37))
 
     def move(self, direction):
@@ -348,8 +348,8 @@ class Scene:
     """Сцена игры. Содержит статичные элементы"""
 
     def __init__(self, flowers_count=5, beehives_count=1, speed=5):
-        self._place_beehives(beehives_count)
         self._place_flowers(flowers_count)
+        self._place_beehives(beehives_count)
         self._set_game_speed(speed)
 
     def _place_flowers(self, flowers_count):
@@ -369,12 +369,18 @@ class Scene:
                 self.flowers.append(Flower(pos))
 
     def _place_beehives(self, beehives_count):
+        max_honey = 0
+        for flower in self.flowers:
+            max_honey += flower.honey
         if beehives_count in (1, 2):
+            if beehives_count == 2:
+                max_honey /= 2.0
+            max_honey = int((max_honey / 1000.0) * 1.3) * 1000
             self.beehives = []
-            self.beehive = BeeHive(pos=(90, 75))
+            self.beehive = BeeHive(pos=(90, 75), max_honey=max_honey)
             self.beehives.append(self.beehive)
             if beehives_count == 2:
-                self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75)))
+                self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75), max_honey=max_honey))
         else:
             raise Exception("Only 2 beehives!")
 
@@ -696,8 +702,8 @@ def random_point():
 
 if __name__ == '__main__':
 
-    game = GameEngine("test", resolution=(700, 700))
-    scene = Scene(beehives_count=2, flowers_count=40, speed=40)
+    game = GameEngine("test", resolution=(1400, 700))
+    scene = Scene(beehives_count=2, flowers_count=120, speed=40)
 
     class MyBee(Bee):
         my_beehave = scene.beehives[0]
