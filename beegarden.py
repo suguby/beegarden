@@ -246,9 +246,17 @@ class Bee(MshpSprite, HoneyHolder):
     """Пчела. Может летать по экрану и носить мёд."""
     _img_file_name = 'bee.png'
     _layer = 2
+    team = 1
+    my_beehive = None
+    flowers = []
 
     def __init__(self, pos=None):
         """создать пчелу в указанной точке экрана"""
+        if self.team > 1:
+            self._img_file_name = 'bee-2.png'
+        if Scene.beehives:
+            self.my_beehive = Scene.beehives[self.team - 1]
+            pos = self.my_beehive.coord
         MshpSprite.__init__(self, pos)
         self.speed = float(self.speed) - random.random()
         HoneyHolder.__init__(self, 0, 100)
@@ -351,6 +359,7 @@ class Scene:
     _flower_size = 100
     _behive_size = 50
     _flower_jitter = 0.72
+    beehives = []
 
     def __init__(self, flowers_count=5, beehives_count=1, speed=5):
         self._place_flowers(flowers_count)
@@ -394,6 +403,7 @@ class Scene:
             dy = random.randint(min_random, max_random)
             pos = Point(x0 + cell_x + dx, y0 + cell_y + dy)
             self.flowers.append(Flower(pos))
+        Bee.flowers = self.flowers
 
     def _place_beehives(self, beehives_count):
         max_honey = 0
@@ -405,9 +415,7 @@ class Scene:
             max_honey = int(round((max_honey / 1000.0) * 1.3)) * 1000
             if max_honey < 1000:
                 max_honey = 1000
-            self.beehives = []
-            self.beehive = BeeHive(pos=(90, 75), max_honey=max_honey)
-            self.beehives.append(self.beehive)
+            Scene.beehives.append(BeeHive(pos=(90, 75), max_honey=max_honey))
             if beehives_count == 2:
                 self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75), max_honey=max_honey))
         else:
@@ -727,7 +735,7 @@ if __name__ == '__main__':
     scene = Scene(beehives_count=2, flowers_count=110, speed=40)
 
     class MyBee(Bee):
-        my_beehave = scene.beehives[0]
+        team = 1
         all_bees = []
 
         def is_other_bee_target(self, flower):
@@ -737,7 +745,7 @@ if __name__ == '__main__':
             return False
 
         def get_nearest_flower(self):
-            flowers_with_honey = [flower for flower in scene.flowers if flower.honey > 0]
+            flowers_with_honey = [flower for flower in self.flowers if flower.honey > 0]
             if not flowers_with_honey:
                 return None
             nearest_flower = None
@@ -750,16 +758,16 @@ if __name__ == '__main__':
 
         def go_next_flower(self):
             if self.is_full():
-                self.move_at(self.my_beehave)
+                self.move_at(self.my_beehive)
             else:
                 self.flower = self.get_nearest_flower()
                 if self.flower is not None:
                     self.move_at(self.flower)
                 elif self.honey > 0:
-                    self.move_at(self.my_beehave)
+                    self.move_at(self.my_beehive)
                 else:
-                    i = random_number(0, len(scene.flowers) - 1)
-                    self.move_at(scene.flowers[i])
+                    i = random_number(0, len(self.flowers) - 1)
+                    self.move_at(self.flowers[i])
 
         def on_born(self):
             MyBee.all_bees.append(self)
@@ -781,11 +789,10 @@ if __name__ == '__main__':
             self.go_next_flower()
 
     class SecondBee(MyBee):
-        my_beehave = scene.beehives[1]
-        _img_file_name = 'bee-2.png'
+        team = 2
 
         def get_nearest_flower(self):
-            flowers_with_honey = [flower for flower in scene.flowers if flower.honey > 0]
+            flowers_with_honey = [flower for flower in self.flowers if flower.honey > 0]
             if not flowers_with_honey:
                 return None
             nearest_flower = None
@@ -806,7 +813,7 @@ if __name__ == '__main__':
                 return nearest_flower
             return random.choice(flowers_with_honey)
 
-    bees = [MyBee(pos=Point(100, 100)) for i in range(10)]
-    bees_2 = [SecondBee(pos=scene.beehives[1].coord) for i in range(10)]
+    bees = [MyBee() for i in range(10)]
+    bees_2 = [SecondBee() for i in range(10)]
 
     game.go(debug=False)
