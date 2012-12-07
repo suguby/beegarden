@@ -592,6 +592,10 @@ class GameEngine:
         self.debug = False
 
     def go(self):
+        while self._go():
+            pass
+
+    def _go(self):
         """Выполнение игрового цикла: рассчет позиций спрайтов и отрисовка их не экране"""
 
         one_step = False
@@ -777,5 +781,4 @@ if __name__ == '__main__':
     bees = [MyBee(pos=Point(100, 100)) for i in range(10)]
     bees_2 = [SecondBee(pos=scene.beehives[1].coord) for i in range(10)]
 
-    while game.go():
-        pass
+    game.go()
