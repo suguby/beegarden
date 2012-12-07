@@ -415,16 +415,14 @@ class Scene:
 
     def __init__(self, flowers_count=5, beehives_count=1, speed=5):
 
-        if beehives_count > 2:
-            beehives_count = 2
-        self.beehives = []
-        for i in range(beehives_count):
-            if i:
-                x = SCREENRECT.width - 90
-            else:
-                x = 90
-            self.beehives.append(BeeHive(pos=(x, 75)))
-        self.beehive = self.beehives[0]
+        if beehives_count in (1, 2):
+            self.beehives = []
+            self.beehive = BeeHive(pos=(90, 75))
+            self.beehives.append(self.beehive)
+            if beehives_count == 2:
+                self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75)))
+        else:
+            raise Exception("Only 2 beehives!")
 
         left_bottom = Point(100, 200)
         top_right = Point(SCREENRECT.width - 100, SCREENRECT.height - 60)
