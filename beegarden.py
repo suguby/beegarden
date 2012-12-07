@@ -781,13 +781,14 @@ if __name__ == '__main__':
         _img_file_name = 'bee-2.png'
 
         def get_nearest_flower(self):
+            flowers_with_honey = [flower for flower in scene.flowers if flower.honey > 0]
+            if not flowers_with_honey:
+                return None
             nearest_flower = None
             max_honey = 0
-            for flower in scene.flowers:
-                if flower.honey == 0:
-                    continue
+            for flower in flowers_with_honey:
                 distance = self.distance_to(flower)
-                if distance > 200:
+                if distance > 300:
                     continue
                 if flower.honey > max_honey:
                     nearest_flower = flower
@@ -797,7 +798,9 @@ if __name__ == '__main__':
                         nearest_flower = flower
                     elif distance < self.distance_to(nearest_flower):
                         nearest_flower = flower
-            return nearest_flower
+            if nearest_flower:
+                return nearest_flower
+            return random.choice(flowers_with_honey)
 
     bees = [MyBee(pos=Point(100, 100)) for i in range(10)]
     bees_2 = [SecondBee(pos=scene.beehives[1].coord) for i in range(10)]
