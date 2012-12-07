@@ -785,6 +785,7 @@ if __name__ == '__main__':
 
     class SecondBee(MyBee):
         my_beehave = scene.beehives[1]
+        _img_file_name = 'bee-2.png'
 
         def get_nearest_flower(self):
             nearest_flower = None
