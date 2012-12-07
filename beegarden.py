@@ -426,8 +426,8 @@ class Scene:
             self.beehives.append(BeeHive(pos=(x, 75)))
         self.beehive = self.beehives[0]
 
-        left_bottom = Point(50, 200)
-        top_right = Point(SCREENRECT.width - 50, SCREENRECT.height - 60)
+        left_bottom = Point(100, 200)
+        top_right = Point(SCREENRECT.width - 100, SCREENRECT.height - 60)
         self.flowers = []
         while len(self.flowers) < flowers_count:
             x = random.randint(left_bottom.x, top_right.x)
@@ -478,10 +478,10 @@ class Point():
         try:  # arg1 is Point
             self.x = arg1.x
             self.y = arg1.y
-        except all:
+        except AttributeError:
             try:  # arg1 is tuple or list
                 self.x, self.y = arg1
-            except all:  # arg1 & arg2 is numeric
+            except:  # arg1 & arg2 is numeric
                 self.x, self.y = arg1, arg2
 
     def to_screen(self):
