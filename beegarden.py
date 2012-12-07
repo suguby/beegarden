@@ -346,6 +346,9 @@ class Flower(MshpSprite, HoneyHolder):
 
 class Scene:
     """Сцена игры. Содержит статичные элементы"""
+    _flower_size = 100
+    _behive_size = 50
+    _flower_jitter = 0.72
 
     def __init__(self, flowers_count=5, beehives_count=1, speed=5):
         self._place_flowers(flowers_count)
@@ -353,20 +356,42 @@ class Scene:
         self._set_game_speed(speed)
 
     def _place_flowers(self, flowers_count):
-        left_bottom = Point(100, 200)
-        top_right = Point(SCREENRECT.width - 100, SCREENRECT.height - 60)
+        field_width = SCREENRECT.width - self._flower_size * 2
+        field_height = SCREENRECT.height - self._flower_size * 2 - self._behive_size
+        if field_width < 100 or field_height < 100:
+            raise Exception("Too little field...")
+#        print "field", field_width, field_height
+
+        cell_size = int(round(sqrt(float(field_width * field_height) / flowers_count)))
+        while True:
+            cells_in_width = int(round(field_width / cell_size))
+            cells_in_height = int(round(field_height / cell_size))
+            cells_count = cells_in_width * cells_in_height
+            if cells_count >= flowers_count:
+                break
+            cell_size -= 1
+        cell_numbers = [i for i in range(cells_count)]
+#        print "cells: size", cell_size, "count", cells_count, "in w/h", cells_in_width, cells_in_height
+
+        field_width = cells_in_width * cell_size
+        field_height = cells_in_height * cell_size
+        x0 = int((SCREENRECT.width - field_width) / 2)
+        y0 = int((SCREENRECT.height - field_height) / 2) + self._behive_size
+#        print "field", field_width, field_height, x0, y0
+
+        min_random = int((1.0 - self._flower_jitter) * (cell_size / 2.0))
+        max_random = cell_size - min_random
+
         self.flowers = []
         while len(self.flowers) < flowers_count:
-            x = random.randint(left_bottom.x, top_right.x)
-            y = random.randint(left_bottom.y, top_right.y)
-            pos = Point(x, y)
-            min_disance = 1000
-            for flower in self.flowers:
-                distance = flower.distance_to(pos)
-                if min_disance > distance:
-                    min_disance = distance
-            if min_disance > 50:
-                self.flowers.append(Flower(pos))
+            cell_number = random.choice(cell_numbers)
+            cell_numbers.remove(cell_number)
+            cell_x = (cell_number % cells_in_width) * cell_size
+            cell_y = (cell_number // cells_in_width) * cell_size
+            dx = random.randint(min_random, max_random)
+            dy = random.randint(min_random, max_random)
+            pos = Point(x0 + cell_x + dx, y0 + cell_y + dy)
+            self.flowers.append(Flower(pos))
 
     def _place_beehives(self, beehives_count):
         max_honey = 0
@@ -702,8 +727,8 @@ def random_point():
 
 if __name__ == '__main__':
 
-    game = GameEngine("test", resolution=(1400, 700))
-    scene = Scene(beehives_count=2, flowers_count=120, speed=40)
+    game = GameEngine("test", resolution=(500, 500))
+    scene = Scene(beehives_count=2, flowers_count=20, speed=40)
 
     class MyBee(Bee):
         my_beehave = scene.beehives[0]
