@@ -614,36 +614,13 @@ class GameEngine:
 
         self.debug = False
 
-    def go(self):
-        while self._go():
-            pass
-
-    def _go(self):
-        """Выполнение игрового цикла: рассчет позиций спрайтов и отрисовка их не экране"""
-
-        one_step = False
-        for event in pygame.event.get():
-            if (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                return False
-            if event.type == KEYDOWN and event.key == K_f:
-                self.fps_meter.show = not self.fps_meter.show
-
-            if event.type == KEYDOWN and event.key == K_d:
-                self.debug = not self.debug
-            if event.type == KEYDOWN and event.key == K_s:
-                one_step = True
-
-        if self.debug and not one_step:
-            return True
-
+    def _draw_scene(self):
         # clear/erase the last drawn sprites
         self.all.clear(self.screen, self.background)
         #self.flower.clear(self.screen, self.background)
         #self.others.clear(self.screen, self.background)
-
         #update all the sprites
         self.all.update()
-
         #draw the scene
         dirty = self.all.draw(self.screen)
         #pygame.draw.circle(self.screen, (0,0,0), flower_point.to_screen(), 20, 3) # отладка вывода положения цветка
@@ -652,10 +629,32 @@ class GameEngine:
         #pygame.display.update(dirty)
         #dirty = self.others.draw(self.screen)
         #pygame.display.update(dirty)
-
         #cap the framerate
         clock.tick(self.max_fps)
+
+    def _proceed_keyboard(self):
+        one_step = False
+        for event in pygame.event.get():
+            if (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                self.halt = True
+            if event.type == KEYDOWN and event.key == K_f:
+                self.fps_meter.show = not self.fps_meter.show
+            if event.type == KEYDOWN and event.key == K_d:
+                self.debug = not self.debug
+            if event.type == KEYDOWN and event.key == K_s:
+                one_step = True
+        if self.debug and not one_step:
+            return False
         return True
+
+    def go(self, debug=False):
+        self.debug = debug
+        if self.debug:
+            self._draw_scene()
+        self.halt = False
+        while not self.halt:
+            if self._proceed_keyboard():
+                self._draw_scene()
 
 
 class Fps(pygame.sprite.DirtySprite):
@@ -715,7 +714,6 @@ def random_number(a=0, b=300):
     return random.randint(a, b)
 
 
-
 def _get_random_coordinate(high):
     return random_number(RANDOM_POINT_BORDER, high - RANDOM_POINT_BORDER)
 
@@ -731,27 +729,38 @@ def random_point():
 
 if __name__ == '__main__':
 
-    game = GameEngine("test", resolution=(500, 500))
-    scene = Scene(beehives_count=2, flowers_count=10, speed=40)
+    game = GameEngine("test", resolution=(1000, 500))
+    scene = Scene(beehives_count=2, flowers_count=110, speed=40)
 
     class MyBee(Bee):
         my_beehave = scene.beehives[0]
+        all_bees = []
+
+        def is_other_bee_target(self, flower):
+            for bee in MyBee.all_bees:
+                if hasattr(bee, 'flower') and bee.flower and bee.flower._id == flower._id:
+                    return True
+            return False
 
         def get_nearest_flower(self):
+            flowers_with_honey = [flower for flower in scene.flowers if flower.honey > 0]
+            if not flowers_with_honey:
+                return None
             nearest_flower = None
-            for flower in scene.flowers:
-                if flower.honey > 0:
-                    if nearest_flower is None or self.distance_to(flower) < self.distance_to(nearest_flower):
-                        nearest_flower = flower
+            for flower in flowers_with_honey:
+                if self.is_other_bee_target(flower):
+                    continue
+                if nearest_flower is None or self.distance_to(flower) < self.distance_to(nearest_flower):
+                    nearest_flower = flower
             return nearest_flower
 
         def go_next_flower(self):
             if self.is_full():
                 self.move_at(self.my_beehave)
             else:
-                nearest_flower = self.get_nearest_flower()
-                if nearest_flower is not None:
-                    self.move_at(nearest_flower)
+                self.flower = self.get_nearest_flower()
+                if self.flower is not None:
+                    self.move_at(self.flower)
                 elif self.honey > 0:
                     self.move_at(self.my_beehave)
                 else:
@@ -759,6 +768,7 @@ if __name__ == '__main__':
                     self.move_at(scene.flowers[i])
 
         def on_born(self):
+            MyBee.all_bees.append(self)
             self.go_next_flower()
 
         def on_stop_at_flower(self, flower):
@@ -805,4 +815,4 @@ if __name__ == '__main__':
     bees = [MyBee(pos=Point(100, 100)) for i in range(10)]
     bees_2 = [SecondBee(pos=scene.beehives[1].coord) for i in range(10)]
 
-    game.go()
+    game.go(debug=False)
