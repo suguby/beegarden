@@ -199,13 +199,12 @@ class HoneyHolder():
                     self.on_honey_loaded()
                     self._source = None
                     self._state = 'stop'
-            else:
-                self.on_honey_loaded()
-                if self.honey:
-                    self._source = None
-                    self._state = 'stop'
                 else:
                     self._state = 'loading'
+            else:
+                self.on_honey_loaded()
+                self._source = None
+                self._state = 'stop'
         if self._target:
             honey = self.get_honey()
             self._target.put_honey(honey)
