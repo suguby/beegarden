@@ -253,9 +253,8 @@ class Bee(MshpSprite, HoneyHolder):
         """создать пчелу в указанной точке экрана"""
         if self.team > 1:
             self._img_file_name = 'bee-2.png'
-        if Scene.beehives:
-            self.my_beehive = Scene.beehives[self.team - 1]
-            pos = self.my_beehive.coord
+        self.my_beehive = Scene.get_beehive(self.team)
+        pos = self.my_beehive.coord
         MshpSprite.__init__(self, pos)
         self.speed = float(self.speed) - random.random()
         HoneyHolder.__init__(self, 0, 100)
@@ -419,6 +418,14 @@ class Scene:
                 self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75), max_honey=max_honey))
         else:
             raise Exception("Only 2 beehives!")
+
+    @classmethod
+    def get_beehive(cls, team):
+        # TODO сделать автоматическое распределение ульев - внизу, по кол-ву команд
+        try:
+            return cls.beehives[team - 1]
+        except IndexError:
+            return cls.beehives[0]
 
     def _set_game_speed(self, speed):
         if speed > NEAR_RADIUS:
@@ -731,7 +738,7 @@ def random_point():
 if __name__ == '__main__':
 
     game = GameEngine("test", resolution=(1000, 500))
-    scene = Scene(beehives_count=2, flowers_count=110, speed=40)
+    scene = Scene(beehives_count=2, flowers_count=80, speed=40)
 
     class MyBee(Bee):
         team = 1
