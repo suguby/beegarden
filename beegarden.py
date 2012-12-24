@@ -16,7 +16,7 @@ NEAR_RADIUS = 20
 RANDOM_POINT_BORDER = 42
 
 
-class MshpSprite(pygame.sprite.DirtySprite):
+class BaseSprite(pygame.sprite.DirtySprite):
     """Класс отображения объектов на экране"""
     _img_file_name = 'empty.png'
     _layer = 0
@@ -53,8 +53,8 @@ class MshpSprite(pygame.sprite.DirtySprite):
         self.load_value = 0
         self.load_value_px = 0
 
-        MshpSprite._sprites_count += 1
-        self._id = MshpSprite._sprites_count
+        BaseSprite._sprites_count += 1
+        self._id = BaseSprite._sprites_count
 
     def __str__(self):
         return 'sprite %s: %s %s %s %s' % (self._id, self.coord, self.vector, self.is_moving, self.is_turning)
@@ -115,7 +115,7 @@ class MshpSprite(pygame.sprite.DirtySprite):
             target = Point(target)
         elif isinstance(target, Point):
             pass
-        elif isinstance(target, MshpSprite):
+        elif isinstance(target, BaseSprite):
             target = target.coord
         else:
             raise Exception("move_at: target %s must be coord or point or sprite!" % target)
@@ -133,7 +133,7 @@ class MshpSprite(pygame.sprite.DirtySprite):
 
     def distance_to(self, obj):
         """ Расстояние до объекта <объект/точка>"""
-        if isinstance(obj, MshpSprite):
+        if isinstance(obj, BaseSprite):
             return self.coord.distance_to(obj.coord)
         if isinstance(obj, Point):
             return self.coord.distance_to(obj)
@@ -192,9 +192,9 @@ class HoneyHolder():
             self._target = None
             return
         if self._source:
-            honey = self._source.get_honey()
+            honey = self._source._get_honey()
             if honey:
-                self.put_honey(honey)
+                self._put_honey(honey)
                 if self.honey >= self._honey_max:
                     self.on_honey_loaded()
                     self._source = None
@@ -206,8 +206,8 @@ class HoneyHolder():
                 self._source = None
                 self._state = 'stop'
         if self._target:
-            honey = self.get_honey()
-            self._target.put_honey(honey)
+            honey = self._get_honey()
+            self._target._put_honey(honey)
             if self.honey == 0:
                 self.on_honey_unloaded()
                 self._target = None
@@ -215,7 +215,7 @@ class HoneyHolder():
             else:
                 self._state = 'unloading'
 
-    def get_honey(self):
+    def _get_honey(self):
         """Взять мёд у объекта"""
         if self._honey > self.honey_speed:
             self._honey -= self.honey_speed
@@ -228,7 +228,7 @@ class HoneyHolder():
             return value
         return 0.0
 
-    def put_honey(self, value):
+    def _put_honey(self, value):
         """Отдать мёд объекту"""
         self._honey += value
         if self._honey > self._honey_max:
@@ -238,10 +238,10 @@ class HoneyHolder():
     def _set_load_hh(self):
         """Внутренняя функция отрисовки бара"""
         load_value = int((float(self._honey) / self._honey_max) * 100.0)
-        MshpSprite._set_load(self, load_value)
+        BaseSprite._set_load(self, load_value)
 
 
-class Bee(MshpSprite, HoneyHolder):
+class Bee(BaseSprite, HoneyHolder):
     """Пчела. Может летать по экрану и носить мёд."""
     _img_file_name = 'bee.png'
     _layer = 2
@@ -255,13 +255,13 @@ class Bee(MshpSprite, HoneyHolder):
             self._img_file_name = 'bee-2.png'
         self.my_beehive = Scene.get_beehive(self.team)
         pos = self.my_beehive.coord
-        MshpSprite.__init__(self, pos)
+        BaseSprite.__init__(self, pos)
         self.speed = float(self.speed) - random.random()
         HoneyHolder.__init__(self, 0, 100)
         self.on_born()
 
     def __str__(self):
-        return 'bee(%s,%s) %s %s' % (self.x, self.y, self._state, MshpSprite.__str__(self))
+        return 'bee(%s,%s) %s %s' % (self.x, self.y, self._state, BaseSprite.__str__(self))
 
     def __repr__(self):
         return str(self)
@@ -269,13 +269,13 @@ class Bee(MshpSprite, HoneyHolder):
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
         HoneyHolder._update(self)
-        MshpSprite.update(self)
+        BaseSprite.update(self)
 
     def move_at(self, target):
         """ Задать движение к указанной точке <объект/точка/координаты>, <скорость> """
         self.target = target
         self._state = 'moving'
-        MshpSprite.move_at(self, target)
+        BaseSprite.move_at(self, target)
 
     def on_stop_at_target(self):
         """Обработчик события 'остановка у цели' """
@@ -300,15 +300,15 @@ class Bee(MshpSprite, HoneyHolder):
         pass
 
 
-class BeeHive(MshpSprite, HoneyHolder):
+class BeeHive(BaseSprite, HoneyHolder):
     """Улей. Стоит там где поставили и содержит мёд."""
     _img_file_name = 'beehive.png'
 
     def __init__(self, pos=None, max_honey=4000):
         """создать улей в указанной точке экрана"""
-        MshpSprite.__init__(self, pos)
+        BaseSprite.__init__(self, pos)
         HoneyHolder.__init__(self, 0, max_honey)
-        self.hm = HoneyMeter(pos=(pos[0] - 24, pos[1] - 37))
+        self.honey_meter = HoneyMeter(pos=(pos[0] - 24, pos[1] - 37))
 
     def move(self, direction):
         """Заглушка - улей не может двигаться"""
@@ -320,12 +320,12 @@ class BeeHive(MshpSprite, HoneyHolder):
 
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
-        self.hm.set_value(self.honey)
+        self.honey_meter.set_value(self.honey)
         HoneyHolder._update(self)
-        MshpSprite.update(self)
+        BaseSprite.update(self)
 
 
-class Flower(MshpSprite, HoneyHolder):
+class Flower(BaseSprite, HoneyHolder):
     """Цветок. Источник мёда."""
     _img_file_name = 'romashka.png'
 
@@ -334,7 +334,7 @@ class Flower(MshpSprite, HoneyHolder):
         Если не указано - то в произвольном месте в квадрате ((200,200),(край экрана - 50,край экрана - 50))"""
         if not pos:
             pos = (random.randint(200, SCREENRECT.width - 50), random.randint(200, SCREENRECT.height - 50))
-        MshpSprite.__init__(self, pos)
+        BaseSprite.__init__(self, pos)
         honey = random.randint(100, 200)
         HoneyHolder.__init__(self, honey, honey)
 
@@ -349,7 +349,7 @@ class Flower(MshpSprite, HoneyHolder):
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
         HoneyHolder._update(self)
-        MshpSprite.update(self)
+        BaseSprite.update(self)
 
 
 class Scene:
@@ -430,7 +430,7 @@ class Scene:
     def _set_game_speed(self, speed):
         if speed > NEAR_RADIUS:
             speed = NEAR_RADIUS
-        MshpSprite.speed = speed
+        BaseSprite.speed = speed
         honey_speed = int(speed / 2.0)
         if honey_speed < 1:
             honey_speed = 1
@@ -617,7 +617,7 @@ class GameEngine:
         pygame.display.flip()
 
         self.all = pygame.sprite.LayeredUpdates()
-        MshpSprite.containers = self.all
+        BaseSprite.containers = self.all
         Fps.containers = self.all
         HoneyMeter.containers = self.all
 
@@ -735,91 +735,92 @@ def random_point():
     return Point(x, y)
 
 
-if __name__ == '__main__':
+class WorkerBee(Bee):
+    team = 1
+    all_bees = []
 
-    game = GameEngine("test", resolution=(1000, 500))
-    scene = Scene(beehives_count=2, flowers_count=80, speed=40)
+    def is_other_bee_target(self, flower):
+        for bee in WorkerBee.all_bees:
+            if hasattr(bee, 'flower') and bee.flower and bee.flower._id == flower._id:
+                return True
+        return False
 
-    class MyBee(Bee):
-        team = 1
-        all_bees = []
+    def get_nearest_flower(self):
+        flowers_with_honey = [flower for flower in self.flowers if flower.honey > 0]
+        if not flowers_with_honey:
+            return None
+        nearest_flower = None
+        for flower in flowers_with_honey:
+            if self.is_other_bee_target(flower):
+                continue
+            if nearest_flower is None or self.distance_to(flower) < self.distance_to(nearest_flower):
+                nearest_flower = flower
+        return nearest_flower
 
-        def is_other_bee_target(self, flower):
-            for bee in MyBee.all_bees:
-                if hasattr(bee, 'flower') and bee.flower and bee.flower._id == flower._id:
-                    return True
-            return False
-
-        def get_nearest_flower(self):
-            flowers_with_honey = [flower for flower in self.flowers if flower.honey > 0]
-            if not flowers_with_honey:
-                return None
-            nearest_flower = None
-            for flower in flowers_with_honey:
-                if self.is_other_bee_target(flower):
-                    continue
-                if nearest_flower is None or self.distance_to(flower) < self.distance_to(nearest_flower):
-                    nearest_flower = flower
-            return nearest_flower
-
-        def go_next_flower(self):
-            if self.is_full():
+    def go_next_flower(self):
+        if self.is_full():
+            self.move_at(self.my_beehive)
+        else:
+            self.flower = self.get_nearest_flower()
+            if self.flower is not None:
+                self.move_at(self.flower)
+            elif self.honey > 0:
                 self.move_at(self.my_beehive)
             else:
-                self.flower = self.get_nearest_flower()
-                if self.flower is not None:
-                    self.move_at(self.flower)
-                elif self.honey > 0:
-                    self.move_at(self.my_beehive)
-                else:
-                    i = random_number(0, len(self.flowers) - 1)
-                    self.move_at(self.flowers[i])
+                i = random_number(0, len(self.flowers) - 1)
+                self.move_at(self.flowers[i])
 
-        def on_born(self):
-            MyBee.all_bees.append(self)
+    def on_born(self):
+        WorkerBee.all_bees.append(self)
+        self.go_next_flower()
+
+    def on_stop_at_flower(self, flower):
+        if flower.honey > 0:
+            self.load_honey_from(flower)
+        else:
             self.go_next_flower()
 
-        def on_stop_at_flower(self, flower):
-            if flower.honey > 0:
-                self.load_honey_from(flower)
-            else:
-                self.go_next_flower()
+    def on_honey_loaded(self):
+        self.go_next_flower()
 
-        def on_honey_loaded(self):
-            self.go_next_flower()
+    def on_stop_at_beehive(self, beehive):
+        self.unload_honey_to(beehive)
 
-        def on_stop_at_beehive(self, beehive):
-            self.unload_honey_to(beehive)
+    def on_honey_unloaded(self):
+        self.go_next_flower()
 
-        def on_honey_unloaded(self):
-            self.go_next_flower()
 
-    class SecondBee(MyBee):
-        team = 2
+class GreedyBee(WorkerBee):
+    team = 2
 
-        def get_nearest_flower(self):
-            flowers_with_honey = [flower for flower in self.flowers if flower.honey > 0]
-            if not flowers_with_honey:
-                return None
-            nearest_flower = None
-            max_honey = 0
-            for flower in flowers_with_honey:
-                distance = self.distance_to(flower)
-                if distance > 300:
-                    continue
-                if flower.honey > max_honey:
+    def get_nearest_flower(self):
+        flowers_with_honey = [flower for flower in self.flowers if flower.honey > 0]
+        if not flowers_with_honey:
+            return None
+        nearest_flower = None
+        max_honey = 0
+        for flower in flowers_with_honey:
+            distance = self.distance_to(flower)
+            if distance > 300:
+                continue
+            if flower.honey > max_honey:
+                nearest_flower = flower
+                max_honey = flower.honey
+            elif flower.honey == max_honey:
+                if nearest_flower is None:
                     nearest_flower = flower
-                    max_honey = flower.honey
-                elif flower.honey == max_honey:
-                    if nearest_flower is None:
-                        nearest_flower = flower
-                    elif distance < self.distance_to(nearest_flower):
-                        nearest_flower = flower
-            if nearest_flower:
-                return nearest_flower
-            return random.choice(flowers_with_honey)
+                elif distance < self.distance_to(nearest_flower):
+                    nearest_flower = flower
+        if nearest_flower:
+            return nearest_flower
+        return random.choice(flowers_with_honey)
 
-    bees = [MyBee() for i in range(10)]
-    bees_2 = [SecondBee() for i in range(10)]
+if __name__ == '__main__':
+
+    game = GameEngine("My little garden", resolution=(1000, 500))
+    scene = Scene(beehives_count=2, flowers_count=80, speed=40)
+
+    bees = [WorkerBee() for i in range(10)]
+    bees_2 = [GreedyBee() for i in range(10)]
 
     game.go(debug=False)
