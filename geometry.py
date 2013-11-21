@@ -24,8 +24,8 @@ class Point():
 
     def to_screen(self):
         """Преобразовать координаты к экранным"""
-        from user_interface import SCREENRECT
-        return self.int_x, SCREENRECT.height - self.int_y
+        import user_interface
+        return self.int_x, user_interface.SCREENRECT.height - self.int_y
 
     def add(self, vector):
         """Прибавить вектор - точка смещается на вектор"""
@@ -151,9 +151,9 @@ def random_point():
     """
         Сгенерировать случнайную точку внутри области рисования
     """
-    from user_interface import SCREENRECT
-    x = _get_random_coordinate(SCREENRECT.width)
-    y = _get_random_coordinate(SCREENRECT.height)
+    import user_interface
+    x = _get_random_coordinate(user_interface.SCREENRECT.width)
+    y = _get_random_coordinate(user_interface.SCREENRECT.height)
     return Point(x, y)
 
 

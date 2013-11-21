@@ -2,6 +2,7 @@
 
 from core import Bee  # импортируем нужное из библиотек
 
+
 class MyBee(Bee):
     team = 1
 

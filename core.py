@@ -6,7 +6,8 @@ import random
 from constants import NEAR_RADIUS
 
 from geometry import Point
-from user_interface import BaseSprite, HoneyMeter, SCREENRECT
+from user_interface import BaseSprite, HoneyMeter
+import user_interface
 
 
 class HoneyHolder():
@@ -198,7 +199,10 @@ class Flower(BaseSprite, HoneyHolder):
         """Создать цветок в указанном месте.
         Если не указано - то в произвольном месте в квадрате ((200,200),(край экрана - 50,край экрана - 50))"""
         if not pos:
-            pos = (random.randint(200, SCREENRECT.width - 50), random.randint(200, SCREENRECT.height - 50))
+            pos = (
+                random.randint(200, user_interface.SCREENRECT.width - 50),
+                random.randint(200, user_interface.SCREENRECT.height - 50)
+            )
         BaseSprite.__init__(self, pos)
         honey = random.randint(100, 200)
         HoneyHolder.__init__(self, honey, honey)
@@ -230,8 +234,8 @@ class Scene:
         self._set_game_speed(speed)
 
     def _place_flowers(self, flowers_count):
-        field_width = SCREENRECT.width - self._flower_size * 2
-        field_height = SCREENRECT.height - self._flower_size * 2 - self._behive_size
+        field_width = user_interface.SCREENRECT.width - self._flower_size * 2
+        field_height = user_interface.SCREENRECT.height - self._flower_size * 2 - self._behive_size
         if field_width < 100 or field_height < 100:
             raise Exception("Too little field...")
 #        print "field", field_width, field_height
@@ -249,8 +253,8 @@ class Scene:
 
         field_width = cells_in_width * cell_size
         field_height = cells_in_height * cell_size
-        x0 = int((SCREENRECT.width - field_width) / 2)
-        y0 = int((SCREENRECT.height - field_height) / 2) + self._behive_size
+        x0 = int((user_interface.SCREENRECT.width - field_width) / 2)
+        y0 = int((user_interface.SCREENRECT.height - field_height) / 2) + self._behive_size
 #        print "field", field_width, field_height, x0, y0
 
         min_random = int((1.0 - self._flower_jitter) * (cell_size / 2.0))
@@ -280,7 +284,7 @@ class Scene:
                 max_honey = 1000
             Scene.beehives.append(BeeHive(pos=(90, 75), max_honey=max_honey))
             if beehives_count == 2:
-                self.beehives.append(BeeHive(pos=(SCREENRECT.width - 90, 75), max_honey=max_honey))
+                self.beehives.append(BeeHive(pos=(user_interface.SCREENRECT.width - 90, 75), max_honey=max_honey))
         else:
             raise Exception("Only 2 beehives!")
 
