@@ -71,25 +71,17 @@ class GreedyBee(WorkerBee):
         nearest_flower = None
         max_honey = 0
         for flower in flowers_with_honey:
-            distance = self.distance_to(flower)
-            if distance > 300:
-                continue
             if flower.honey > max_honey:
                 nearest_flower = flower
                 max_honey = flower.honey
-            elif flower.honey == max_honey:
-                if nearest_flower is None:
-                    nearest_flower = flower
-                elif distance < self.distance_to(nearest_flower):
-                    nearest_flower = flower
         if nearest_flower:
             return nearest_flower
         return random.choice(flowers_with_honey)
 
 if __name__ == '__main__':
-    scene = Scene(name="My little garden", beehives_count=2, flowers_count=5, speed=10, resolution=(1000, 500)) #
+    scene = Scene(name="My little garden", beehives_count=2, flowers_count=70, speed=10, resolution=(1500, 1000)) #
 
-    bees = [WorkerBee() for i in range(2)]
-    bees_2 = [GreedyBee() for i in range(2)]
+    bees = [WorkerBee() for i in range(10)]
+    bees_2 = [GreedyBee() for i in range(10)]
 
     scene.go()
