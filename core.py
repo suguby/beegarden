@@ -144,6 +144,7 @@ class Bee(HoneyHolder, GameObject, BaseSprite):
 class BeeHive(HoneyHolder, GameObject, BaseSprite):
     """Улей. Стоит там где поставили и содержит мёд."""
     _img_file_name = 'beehive.png'
+    _container = []
 
     def __init__(self, pos=None, max_honey=4000):
         """создать улей в указанной точке экрана"""

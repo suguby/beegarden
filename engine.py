@@ -96,10 +96,11 @@ class Scene:
     beehives = []
 
     def __init__(self, name, flowers_count=5, beehives_count=1, speed=5, resolution=(1000, 500)):
-        from core import Bee
+        from core import Bee, BeeHive
         from user_interface import UserInterface
 
         self.bees = Bee._container
+        self.beehives = BeeHive._container
         self.resolution = resolution
         self.ui = UserInterface(name, resolution=self.resolution)
 
@@ -188,7 +189,7 @@ class Scene:
         HoneyHolder._honey_speed = honey_speed
 
     def game_step(self):
-        for obj in self.bees:
+        for obj in self.bees + self.beehives:
             obj._update()
 
     def go(self):
