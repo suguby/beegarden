@@ -9,7 +9,7 @@ from user_interface import BaseSprite
 
 
 class GameObject(ObjectToSprite):
-    _default_speed = 3
+    _default_speed = 5
 
     coordinates = property(lambda self: self._coord)
     speed = property(lambda self: self._speed)
@@ -120,7 +120,7 @@ class Scene:
         field_height = self.resolution[1] - self._flower_size * 2 - self._behive_size
         if field_width < 100 or field_height < 100:
             raise Exception("Too little field...")
-        #        print "field", field_width, field_height
+            #        print "field", field_width, field_height
 
         cell_size = int(round(sqrt(float(field_width * field_height) / flowers_count)))
         while True:

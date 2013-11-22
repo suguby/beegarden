@@ -114,7 +114,7 @@ class Bee(GameObject, BaseSprite, HoneyHolder):
             if self.my_beehive is None:
                 pos = Point()
             else:
-                pos = self.my_beehive.coordinates
+                pos = self.my_beehive.coordinates.copy()
         BaseSprite.__init__(self)
         HoneyHolder.__init__(self, honey_loaded=0, honey_max=100)
         GameObject.__init__(self, pos=pos)

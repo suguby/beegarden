@@ -22,6 +22,10 @@ class Point():
             except:  # arg1 & arg2 is numeric
                 self.x, self.y = arg1, arg2
 
+    def copy(self):
+        """Выдать новую точку"""
+        return Point(self.x, self.y)
+
     def to_screen(self, height):
         """Преобразовать координаты к экранным"""
         return self.int_x, height - self.int_y
