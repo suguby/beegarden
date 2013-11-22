@@ -5,7 +5,6 @@ import random
 from common import ObjectToSprite
 from constants import NEAR_RADIUS
 from geometry import Point, Vector
-from user_interface import BaseSprite
 
 
 class GameObject(ObjectToSprite):
@@ -14,6 +13,7 @@ class GameObject(ObjectToSprite):
     coordinates = property(lambda self: self._coord)
     speed = property(lambda self: self._speed)
     course = property(lambda self: self._vector.angle)
+    is_moving = property(lambda self: self._is_moving)
 
     def __init__(self, pos=None):
         if pos is None:
@@ -31,9 +31,6 @@ class GameObject(ObjectToSprite):
 
     def _get_direction(self):
         return self._vector.angle
-
-    def _get_load_value(self):
-        return 0.0
 
     def on_born(self):
         """Обработчик события 'рождение' """
@@ -182,11 +179,10 @@ class Scene:
 
     def _set_game_speed(self, speed):
         from core import HoneyHolder
-
         if speed > NEAR_RADIUS:
             speed = NEAR_RADIUS
-        BaseSprite.speed = speed
-        honey_speed = int(speed / 2.0)
+        GameObject._default_speed = speed
+        honey_speed = int(speed / 5.0)
         if honey_speed < 1:
             honey_speed = 1
         HoneyHolder._honey_speed = honey_speed

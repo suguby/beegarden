@@ -40,16 +40,17 @@ class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
 
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
-        if 90 < self._get_direction() < 180:
-            self.image = self._images[1].copy()
-        else:
+        direction = self._get_direction()
+        if abs(direction) > 90:
             self.image = self._images[0].copy()
+        else:
+            self.image = self._images[1].copy()
 
         self.rect.center = self._get_coordinates().to_screen(height=SCREENRECT.height)
 
         load_value = self._get_load_value()
         if load_value:
-            load_value_px = int(load_value * self.w)
+            load_value_px = int(load_value * self.rect.width)
             pygame.draw.line(self.image, (0, 255, 7), (0, 0), (load_value_px, 0), 3)
 
 
