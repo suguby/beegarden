@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import random
-from core import Bee, Scene
-from user_interface import GameEngine
+from core import Bee
+from engine import Scene
 from utils import random_number
 
 
@@ -87,11 +87,9 @@ class GreedyBee(WorkerBee):
         return random.choice(flowers_with_honey)
 
 if __name__ == '__main__':
-
-    game = GameEngine("My little garden", resolution=(1000, 500))
-    scene = Scene(beehives_count=2, flowers_count=80, speed=40)
+    scene = Scene(name="My little garden", beehives_count=2, flowers_count=80, speed=40, resolution=(1000, 500))
 
     bees = [WorkerBee() for i in range(10)]
     bees_2 = [GreedyBee() for i in range(10)]
 
-    game.go(debug=False)
+    scene.go()

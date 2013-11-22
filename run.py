@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from core import Scene  # импортируем нужное из библиотек
+from engine import Scene
 from my_bee import MyBee  # импортируем код класса пчелы
 from user_interface import GameEngine
 

@@ -11,7 +11,7 @@ class Point():
     int_x = property(lambda self: round(self.x), doc="Округленная до пиксела координата X")
     int_y = property(lambda self: round(self.y), doc="Округленная до пиксела координата Y")
 
-    def __init__(self, arg1=0, arg2=0):
+    def __init__(self, arg1=100, arg2=100):
         """Создать точку. Можно создать из другой точки, из списка/тьюпла или из конкретных координат"""
         try:  # arg1 is Point
             self.x = arg1.x
@@ -22,10 +22,9 @@ class Point():
             except:  # arg1 & arg2 is numeric
                 self.x, self.y = arg1, arg2
 
-    def to_screen(self):
+    def to_screen(self, height):
         """Преобразовать координаты к экранным"""
-        import user_interface
-        return self.int_x, user_interface.SCREENRECT.height - self.int_y
+        return self.int_x, height - self.int_y
 
     def add(self, vector):
         """Прибавить вектор - точка смещается на вектор"""
@@ -47,7 +46,7 @@ class Point():
     def __eq__(self, point2):
         """Сравнение двух точек на равенство целочисленных координат"""
         #~ if point2:
-            #~ print self, point2
+        #~ print self, point2
         if self.int_x == point2.int_x and self.int_y == point2.int_y:
             return True
         return False
@@ -125,7 +124,7 @@ class Vector():
             if self.dy >= 0:
                 return 90
             else:
-                return  270
+                return 270
         else:
             angle = atan(self.dy / self.dx) * (180 / pi)
             #print self.dx, self.dy, angle
@@ -152,6 +151,7 @@ def random_point():
         Сгенерировать случнайную точку внутри области рисования
     """
     import user_interface
+
     x = _get_random_coordinate(user_interface.SCREENRECT.width)
     y = _get_random_coordinate(user_interface.SCREENRECT.height)
     return Point(x, y)
