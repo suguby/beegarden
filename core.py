@@ -5,8 +5,8 @@ from math import *
 import random
 from constants import NEAR_RADIUS
 
-from geometry import Point
-from user_interface import BaseSprite, HoneyMeter
+from geometry import Point, Vector
+from user_interface import BaseSprite, HoneyMeter, GameObject
 import user_interface
 
 
@@ -107,7 +107,7 @@ class HoneyHolder():
         BaseSprite._set_load(self, load_value)
 
 
-class Bee(BaseSprite, HoneyHolder):
+class Bee(GameObject, BaseSprite, HoneyHolder):
     """Пчела. Может летать по экрану и носить мёд."""
     _img_file_name = 'bee.png'
     _layer = 2
@@ -115,16 +115,14 @@ class Bee(BaseSprite, HoneyHolder):
     my_beehive = None
     flowers = []
 
-    def __init__(self, pos=None):
+    def __init__(self):
         """создать пчелу в указанной точке экрана"""
         if self.team > 1:
             self._img_file_name = 'bee-2.png'
         self.my_beehive = Scene.get_beehive(self.team)
-        pos = self.my_beehive.coord
-        BaseSprite.__init__(self, pos)
-        self.speed = float(self.speed) - random.random()
+        GameObject.__init__(self, pos=self.my_beehive.pos)
+        BaseSprite.__init__(self)
         HoneyHolder.__init__(self, 0, 100)
-        self.on_born()
 
     def __str__(self):
         return 'bee(%s,%s) %s %s' % (self.x, self.y, self._state, BaseSprite.__str__(self))
@@ -137,12 +135,6 @@ class Bee(BaseSprite, HoneyHolder):
         HoneyHolder._update(self)
         BaseSprite.update(self)
 
-    def move_at(self, target):
-        """ Задать движение к указанной точке <объект/точка/координаты>, <скорость> """
-        self.target = target
-        self._state = 'moving'
-        BaseSprite.move_at(self, target)
-
     def on_stop_at_target(self):
         """Обработчик события 'остановка у цели' """
         self._state = 'stop'
@@ -152,10 +144,6 @@ class Bee(BaseSprite, HoneyHolder):
             self.on_stop_at_beehive(self.target)
         else:
             pass
-
-    def on_born(self):
-        """Обработчик события 'рождение' """
-        pass
 
     def on_stop_at_flower(self, flower):
         """Обработчик события 'остановка у цветка' """

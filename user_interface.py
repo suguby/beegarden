@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import pygame
+import random
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s
 from pygame.rect import Rect
 from constants import NEAR_RADIUS
@@ -12,7 +13,25 @@ MAX_LAYERS = 3
 SPRITES_GROUPS = [pygame.sprite.Group() for i in range(MAX_LAYERS + 1)]
 
 
-class BaseSprite(pygame.sprite.DirtySprite):
+class ObjectToSprite(object):
+    """
+        Интерфейс получения данных об объекте спрайтом
+    """
+
+    def get_coordinates(self):
+        """
+            Получить координаты
+        """
+        raise NotImplementedError
+
+    def get_load_value(self):
+        """
+            Получить величену загрузки медем
+        """
+        raise NotImplementedError
+
+
+class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
     """Класс отображения объектов на экране"""
     _img_file_name = 'empty.png'
     _layer = 0
@@ -20,7 +39,9 @@ class BaseSprite(pygame.sprite.DirtySprite):
     speed = 3
     _sprites_count = 0
 
-    def __init__(self, pos=None):
+    coordinate = property(lambda self: self.get_coordinates)
+
+    def __init__(self):
         """Создать объект в указанном месте"""
 
         if self._layer > MAX_LAYERS:
@@ -34,20 +55,19 @@ class BaseSprite(pygame.sprite.DirtySprite):
         self.images = [self.image, pygame.transform.flip(self.image, 1, 0)]
         self.rect = self.image.get_rect()
 
-        if pos is None:
-            self.coord = Point(100, 100)
-        else:
-            self.coord = Point(pos)
-        self.target_coord = Point(0, 0)
-        self.rect.center = self.coord.to_screen()
-
-        self.vector = Vector()
-        self.is_moving = False
-        self.course = self.vector.angle
-        self.shot = False
-
-        self.load_value = 0
-        self.load_value_px = 0
+        #if pos is None:
+        #    self.coord = Point(100, 100)
+        #else:
+        #    self.coord = Point(pos)
+        #self.target_coord = Point(0, 0)
+        #self.rect.center = self.coord.to_screen()
+        #
+        #self.vector = Vector()
+        #self.is_moving = False
+        #self.course = self.vector.angle
+        #
+        #self.load_value = 0
+        #self.load_value_px = 0
 
         BaseSprite._sprites_count += 1
         self._id = BaseSprite._sprites_count
@@ -58,8 +78,8 @@ class BaseSprite(pygame.sprite.DirtySprite):
     def __repr__(self):
         return str(self)
 
-    x = property(lambda self: self.coord.int_x, doc="текущая позиция X объекта")
-    y = property(lambda self: self.coord.int_y, doc="текущая позиция Y объекта")
+    x = property(lambda self: self.coordinate.int_x, doc="текущая позиция X объекта")
+    y = property(lambda self: self.coordinate.int_y, doc="текущая позиция Y объекта")
     w = property(lambda self: self.rect.width, doc="ширина спрайта")
     h = property(lambda self: self.rect.height, doc="высота спрайта")
 
@@ -79,66 +99,87 @@ class BaseSprite(pygame.sprite.DirtySprite):
         else:
             self.image = self.images[0].copy()
         #print self.course, self.vector.angle
-        if self.is_moving:
-            self.coord.add(self.vector)
-            self.rect.center = self.coord.to_screen()
-            if self.near(self.target_coord):
-                self.stop()
-                self.on_stop_at_target()
 
-        if self.load_value_px:
-            pygame.draw.line(self.image, (0, 255, 7), (0, 0), (self.load_value_px, 0), 3)
+        self.rect.center = self.coord.to_screen()
 
-        if not SCREENRECT.contains(self.rect):
-            if self.rect.top < SCREENRECT.top:
-                self.rect.top = SCREENRECT.top
-            if self.rect.bottom > SCREENRECT.bottom:
-                self.rect.bottom = SCREENRECT.bottom
-            if self.rect.left < SCREENRECT.left:
-                self.rect.left = SCREENRECT.left
-            if self.rect.right > SCREENRECT.right:
-                self.rect.right = SCREENRECT.right
-            self.stop()
+        load_value = self.get_load_value()
+        if load_value:
+            load_value_px = int((load_value / 100.0) * self.w)
+            pygame.draw.line(self.image, (0, 255, 7), (0, 0), (load_value_px, 0), 3)
 
-    def move(self, direction):
-        """ Задать движение в направлении <угол в градусах>, <скорость> """
-        self.vector = Vector(direction=direction, module=self.speed)
-        self.is_moving = True
+        # TODO сделать проверку на выход за границы экрана
+        #if not SCREENRECT.contains(self.rect):
+        #    if self.rect.top < SCREENRECT.top:
+        #        self.rect.top = SCREENRECT.top
+        #    if self.rect.bottom > SCREENRECT.bottom:
+        #        self.rect.bottom = SCREENRECT.bottom
+        #    if self.rect.left < SCREENRECT.left:
+        #        self.rect.left = SCREENRECT.left
+        #    if self.rect.right > SCREENRECT.right:
+        #        self.rect.right = SCREENRECT.right
+        #    self.stop()
 
-    def move_at(self, target):
-        """ Задать движение к указанной точке <объект/точка/координаты>, <скорость> """
-        if type(target) in (type(()), type([])):
-            target = Point(target)
-        elif isinstance(target, Point):
-            pass
-        elif isinstance(target, BaseSprite):
-            target = target.coord
+
+class GameObject(ObjectToSprite):
+
+    speed = property(lambda self: self._speed)
+
+    def __init__(self, pos=None):
+
+        if pos is None:
+            self.coord = Point(100, 100)
         else:
-            raise Exception("move_at: target %s must be coord or point or sprite!" % target)
-        self.target_coord = target
-        self.vector = Vector(point1=self.coord, point2=self.target_coord, module=self.speed)
-        self.is_moving = True
+            self.coord = Point(pos)
+        self.target_coord = Point(0, 0)
 
-    def stop(self):
-        """ Остановить объект """
-        self.is_moving = False
+        self._vector = Vector()
+        self._is_moving = False
+        self.course = self._vector.angle
+
+        self._speed = float(self._speed) - random.random()  # чуть-чуть разная скорость
+        self.on_born()
+
+    def on_born(self):
+        """Обработчик события 'рождение' """
+        pass
 
     def on_stop_at_target(self):
         """Обработчик события 'остановка у цели' """
         pass
 
+    def move_at(self, target):
+        """ Задать движение к указанной точке <объект/точка/координаты>, <скорость> """
+        if isinstance(target, Point):
+            self.target_coord = target
+        elif isinstance(target, GameObject):
+            self.target_coord = target.coord
+        else:
+            raise Exception("move_at: target {} must be GameObject or Point!".format(target))
+        self._vector = Vector(point1=self.coord, point2=self.target_coord, module=self._speed)
+        self._is_moving = True
+
+    def stop(self):
+        """ Остановить объект """
+        self._is_moving = False
+
     def distance_to(self, obj):
         """ Расстояние до объекта <объект/точка>"""
-        if isinstance(obj, BaseSprite):
+        if isinstance(obj, GameObject):
             return self.coord.distance_to(obj.coord)
         if isinstance(obj, Point):
             return self.coord.distance_to(obj)
-        raise Exception("sprite.distance_to: obj %s must be Sprite or Point!" % obj)
+        raise Exception("sprite.distance_to: obj {} must be GameObject or Point!".format(obj))
 
     def near(self, obj, radius=NEAR_RADIUS):
         """ Проверка близости к объекту <объект/точка>"""
         return self.distance_to(obj) <= radius
 
+    def _update(self):
+        if self._is_moving:
+            self.coord.add(self._vector)
+            if self.near(self.target_coord):
+                self.stop()
+                self.on_stop_at_target()
 
 #class UserInterface:
 #    """Отображение игры: отображение спрайтов
