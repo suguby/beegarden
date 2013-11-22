@@ -9,7 +9,7 @@ from user_interface import BaseSprite
 
 
 class GameObject(ObjectToSprite):
-    _default_speed = 10
+    _default_speed = 3
 
     coordinates = property(lambda self: self._coord)
     speed = property(lambda self: self._speed)
@@ -19,7 +19,7 @@ class GameObject(ObjectToSprite):
         if pos is None:
             self._coord = Point()
         else:
-            self._coord = Point()
+            self._coord = pos
         self._target_coord = Point(0, 0)
         self._vector = Vector()
         self._is_moving = False
@@ -166,9 +166,9 @@ class Scene:
             max_honey = int(round((max_honey / 1000.0) * 1.3)) * 1000
             if max_honey < 1000:
                 max_honey = 1000
-            Scene.beehives.append(BeeHive(pos=(90, 75), max_honey=max_honey))
+            Scene.beehives.append(BeeHive(pos=Point(90, 75), max_honey=max_honey))
             if beehives_count == 2:
-                self.beehives.append(BeeHive(pos=(self.resolution[0] - 90, 75), max_honey=max_honey))
+                self.beehives.append(BeeHive(pos=Point(self.resolution[0] - 90, 75), max_honey=max_honey))
         else:
             raise Exception("Only 2 beehives!")
 

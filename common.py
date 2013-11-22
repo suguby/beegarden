@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+
 class ObjectToSprite(object):
     """
         Интерфейс получения данных об объекте спрайтом
