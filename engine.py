@@ -94,15 +94,17 @@ class Scene:
     _behive_size = 50
     _flower_jitter = 0.72
     beehives = []
+    screen_width = 1024
+    screen_height = 768
 
-    def __init__(self, name, flowers_count=5, beehives_count=1, speed=5, resolution=(1000, 500)):
+    def __init__(self, name, flowers_count=5, beehives_count=1, speed=5, resolution=None):
         from core import Bee, BeeHive
         from user_interface import UserInterface
 
         self.bees = Bee._container
         self.beehives = BeeHive._container
-        self.resolution = resolution
-        self.ui = UserInterface(name, resolution=self.resolution)
+        self.ui = UserInterface(name, resolution=resolution)
+        Scene.screen_width, Scene.screen_height = UserInterface.screen_width, UserInterface.screen_height
 
         self.hold_state = False  # режим пошаговой отладки
         self._step = 0
@@ -114,8 +116,8 @@ class Scene:
     def _place_flowers(self, flowers_count):
         from core import Bee, Flower
 
-        field_width = self.resolution[0] - self._flower_size * 2
-        field_height = self.resolution[1] - self._flower_size * 2 - self._behive_size
+        field_width = Scene.screen_width - self._flower_size * 2
+        field_height = Scene.screen_height - self._flower_size * 2 - self._behive_size
         if field_width < 100 or field_height < 100:
             raise Exception("Too little field...")
             #        print "field", field_width, field_height
@@ -133,8 +135,9 @@ class Scene:
 
         field_width = cells_in_width * cell_size
         field_height = cells_in_height * cell_size
-        x0 = int((self.resolution[0] - field_width) / 2)
-        y0 = int((self.resolution[1] - field_height) / 2) + self._behive_size
+
+        x0 = int((Scene.screen_width - field_width) / 2)
+        y0 = int((Scene.screen_height - field_height) / 2) + self._behive_size
         #        print "field", field_width, field_height, x0, y0
 
         min_random = int((1.0 - self._flower_jitter) * (cell_size / 2.0))
@@ -166,7 +169,7 @@ class Scene:
                 max_honey = 1000
             Scene.beehives.append(BeeHive(pos=Point(90, 75), max_honey=max_honey))
             if beehives_count == 2:
-                Scene.beehives.append(BeeHive(pos=Point(self.resolution[0] - 90, 75), max_honey=max_honey))
+                Scene.beehives.append(BeeHive(pos=Point(Scene.screen_width - 90, 75), max_honey=max_honey))
         else:
             raise Exception("Only 2 beehives!")
 

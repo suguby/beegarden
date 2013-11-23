@@ -79,9 +79,9 @@ class GreedyBee(WorkerBee):
         return random.choice(flowers_with_honey)
 
 if __name__ == '__main__':
-    scene = Scene(name="My little garden", beehives_count=2, flowers_count=5, speed=10, resolution=(1500, 1000)) #
+    scene = Scene(name="My little garden", beehives_count=2, flowers_count=80, speed=10) # , resolution=(1500, 1000)
 
-    count = 2
+    count = 3
     bees = [WorkerBee() for i in range(count)]
     bees_2 = [GreedyBee() for i in range(count)]
 

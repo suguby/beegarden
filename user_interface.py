@@ -3,10 +3,8 @@
 import os
 import pygame
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s, K_q
-from pygame.rect import Rect
 from common import ObjectToSprite
 
-SCREENRECT = None
 MAX_LAYERS = 3
 SPRITES_GROUPS = [pygame.sprite.Group() for i in range(MAX_LAYERS + 1)]
 
@@ -46,7 +44,7 @@ class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
         else:
             self.image = self._images[1].copy()
 
-        self.rect.center = self._get_coordinates().to_screen(height=SCREENRECT.height)
+        self.rect.center = self._get_coordinates().to_screen(height=UserInterface.screen_height)
 
         load_value = self._get_load_value()
         if load_value:
@@ -81,7 +79,7 @@ class HoneyMeter(pygame.sprite.DirtySprite):
         self.color = color
         self.image = self.font.render('-', 0, self.color)
         self.rect = self.image.get_rect()
-        self.rect = self.rect.move(pos[0], SCREENRECT.height - pos[1])
+        self.rect = self.rect.move(pos[0], UserInterface.screen_height - pos[1])
         self.value = 0.0
 
     def set_value(self, value):
@@ -104,7 +102,7 @@ class Fps(pygame.sprite.DirtySprite):
         self.color = color
         self.image = self.font.render('-', 0, self.color)
         self.rect = self.image.get_rect()
-        self.rect = self.rect.move(SCREENRECT.width - 100, 10)
+        self.rect = self.rect.move(UserInterface.screen_width - 100, 10)
         self.fps = []
 
     def update(self):
@@ -125,17 +123,20 @@ class UserInterface:
     """Отображение игры: отображение спрайтов
     и взаимодействия с пользователем"""
 
+    screen_width = 1024
+    screen_height = 768
+
     def __init__(self, name, background_color=None, max_fps=60, resolution=None):
         """Создать окно игры. """
-        global SCREENRECT
 
         pygame.init()
         if background_color is None:
             background_color = (87, 144, 40)
         if resolution is None:
-            resolution = (1024, 768)
-        SCREENRECT = Rect((0, 0), resolution)
-        self.screen = pygame.display.set_mode(SCREENRECT.size)
+            resolution = list(pygame.display.list_modes()[0])
+            resolution[1] -= 100  # хак, что бы были видны ульи внизу экрана
+        self.screen = pygame.display.set_mode(resolution)
+        UserInterface.screen_width, UserInterface.screen_height = self.screen.get_size()
         pygame.display.set_caption(name)
 
         self.background = pygame.Surface(self.screen.get_size())
