@@ -71,6 +71,8 @@ class GreedyBee(WorkerBee):
         nearest_flower = None
         max_honey = 0
         for flower in flowers_with_honey:
+            if self.is_other_bee_target(flower):
+                continue
             if flower.honey > max_honey:
                 nearest_flower = flower
                 max_honey = flower.honey
@@ -79,9 +81,9 @@ class GreedyBee(WorkerBee):
         return random.choice(flowers_with_honey)
 
 if __name__ == '__main__':
-    scene = Scene(name="My little garden", beehives_count=2, flowers_count=80, speed=10) # , resolution=(1500, 1000)
+    scene = Scene(name="My little garden", beehives_count=2, flowers_count=80, speed=10)  # , resolution=(1000, 500)
 
-    count = 3
+    count = 12
     bees = [WorkerBee() for i in range(count)]
     bees_2 = [GreedyBee() for i in range(count)]
 

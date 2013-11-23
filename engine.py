@@ -98,11 +98,13 @@ class Scene:
     screen_height = 768
 
     def __init__(self, name, flowers_count=5, beehives_count=1, speed=5, resolution=None):
-        from core import Bee, BeeHive
+        from core import Bee, BeeHive, Flower
         from user_interface import UserInterface
 
         self.bees = Bee._container
         self.beehives = BeeHive._container
+        self.flowers = Flower._container
+        Bee.flowers = self.flowers
         self.ui = UserInterface(name, resolution=resolution)
         Scene.screen_width, Scene.screen_height = UserInterface.screen_width, UserInterface.screen_height
 
@@ -114,7 +116,7 @@ class Scene:
         self._set_game_speed(speed)
 
     def _place_flowers(self, flowers_count):
-        from core import Bee, Flower
+        from core import Flower
 
         field_width = Scene.screen_width - self._flower_size * 2
         field_height = Scene.screen_height - self._flower_size * 2 - self._behive_size
@@ -123,6 +125,7 @@ class Scene:
             #        print "field", field_width, field_height
 
         cell_size = int(round(sqrt(float(field_width * field_height) / flowers_count)))
+        cells_in_width, cells_in_height, cells_count = 5, 5, 25
         while True:
             cells_in_width = int(round(field_width / cell_size))
             cells_in_height = int(round(field_height / cell_size))
@@ -143,7 +146,6 @@ class Scene:
         min_random = int((1.0 - self._flower_jitter) * (cell_size / 2.0))
         max_random = cell_size - min_random
 
-        self.flowers = []
         while len(self.flowers) < flowers_count:
             cell_number = random.choice(cell_numbers)
             cell_numbers.remove(cell_number)
@@ -152,8 +154,7 @@ class Scene:
             dx = random.randint(min_random, max_random)
             dy = random.randint(min_random, max_random)
             pos = Point(x0 + cell_x + dx, y0 + cell_y + dy)
-            self.flowers.append(Flower(pos))
-        Bee.flowers = self.flowers
+            Flower(pos)  # автоматически добавит к списку цаетов
 
     def _place_beehives(self, beehives_count):
         from core import BeeHive

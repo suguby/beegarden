@@ -5,8 +5,7 @@ import random
 from engine import GameObject, Scene
 
 from geometry import Point
-from user_interface import BaseSprite, HoneyMeter
-import user_interface
+from user_interface import BaseSprite, HoneyMeter, UserInterface
 
 
 class HoneyHolder():
@@ -152,6 +151,7 @@ class BeeHive(HoneyHolder, GameObject, BaseSprite):
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, 0, max_honey)
         self.honey_meter = HoneyMeter(pos=(pos[0] - 24, pos[1] - 37))
+        BeeHive._container.append(self)
 
     def move_at(self, target_pos):
         """Заглушка - улей не может двигаться"""
@@ -167,19 +167,21 @@ class BeeHive(HoneyHolder, GameObject, BaseSprite):
 class Flower(HoneyHolder, GameObject, BaseSprite):
     """Цветок. Источник мёда."""
     _img_file_name = 'romashka.png'
+    _container = []
 
     def __init__(self, pos=None):
         """Создать цветок в указанном месте.
         Если не указано - то в произвольном месте в квадрате ((200,200),(край экрана - 50,край экрана - 50))"""
         if not pos:
             pos = (
-                random.randint(200, user_interface.SCREENRECT.width - 50),
-                random.randint(200, user_interface.SCREENRECT.height - 50)
+                random.randint(200, UserInterface.screen_width - 50),
+                random.randint(200, UserInterface.screen_height - 50)
             )
         honey = random.randint(100, 200)
         BaseSprite.__init__(self)
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, honey, honey)
+        Flower._container.append(self)
 
     def move_at(self, target_pos):
         """Заглушка - цветок не может двигаться"""
