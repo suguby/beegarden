@@ -1,8 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Классы точки и вектора"""
+
 from math import sqrt, pow, pi, sin, cos, atan
+from common import random_number
 from constants import NEAR_RADIUS, RANDOM_POINT_BORDER
-from utils import random_number
 
 
 class Point():

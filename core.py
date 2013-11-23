@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Основной модуль пасеки"""
 
 import random
 from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX
@@ -93,7 +93,7 @@ class Bee(HoneyHolder, GameObject, BaseSprite):
     _img_file_name = 'bee.png'
     _layer = 2
     _container = []
-    team = 1
+    team = 1  # к какой команде пчел принадлежит
     my_beehive = None
     flowers = []
 

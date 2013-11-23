@@ -1,12 +1,13 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Взаимодействие с пользователем - показываем и слушаем ответ"""
+
 import os
 import pygame
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s, K_q
 from common import ObjectToSprite
 
-MAX_LAYERS = 3
-SPRITES_GROUPS = [pygame.sprite.Group() for i in range(MAX_LAYERS + 1)]
+_MAX_LAYERS = 3
+_SPRITES_GROUPS = [pygame.sprite.Group() for i in range(_MAX_LAYERS + 1)]
 
 
 class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
@@ -16,11 +17,11 @@ class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
     _sprites_count = 0
 
     def __init__(self):
-        if self._layer > MAX_LAYERS:
-            self._layer = MAX_LAYERS
+        if self._layer > _MAX_LAYERS:
+            self._layer = _MAX_LAYERS
         if self._layer < 0:
             self._layer = 0
-        self.containers = BaseSprite.containers, SPRITES_GROUPS[self._layer]
+        self.containers = BaseSprite.containers, _SPRITES_GROUPS[self._layer]
         pygame.sprite.Sprite.__init__(self, self.containers)
 
         self.image = load_image(self._img_file_name, -1)
@@ -54,10 +55,10 @@ class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
 
 class HoneyMeter(pygame.sprite.DirtySprite):
     """Отображение кол-ва мёда"""
-    _layer = MAX_LAYERS
+    _layer = _MAX_LAYERS
 
     def __init__(self, pos, color=(255, 255, 0)):
-        self.containers = self.containers, SPRITES_GROUPS[self._layer]
+        self.containers = self.containers, _SPRITES_GROUPS[self._layer]
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.font = pygame.font.Font(None, 27)
         self.color = color

@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Сердце игры - тут все крутится и происходит"""
 from math import sqrt
 import random
 from common import ObjectToSprite
@@ -78,7 +78,6 @@ class GameObject(ObjectToSprite):
             elif self.near(self._target_coord):
                 self.stop()
                 self.on_stop_at_target(self._target)
-
 
 
 class Scene:

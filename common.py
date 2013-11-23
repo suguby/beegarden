@@ -1,5 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Общие обьекты для всех модулей"""
+import random
 
 
 class ObjectToSprite(object):
@@ -24,3 +25,10 @@ class ObjectToSprite(object):
             Получить направление
         """
         raise NotImplementedError
+
+
+def random_number(a=0, b=300):
+    """
+        Выдать случайное целое из диапазона [a,b]
+    """
+    return random.randint(a, b)

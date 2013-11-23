@@ -1,9 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Тестовая игра"""
+
 import random
+from common import random_number
 from core import Bee
 from engine import Scene
-from utils import random_number
 from geometry import Point
 
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""запуск простейшей игры"""
 
 from engine import Scene
 from my_bee import MyBee  # импортируем код класса пчелы

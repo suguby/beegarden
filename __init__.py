@@ -1,9 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Пакет для игры программистов в пасеку - чья команда пчел быстрее соберет мёд?"""
 
-
-from geometry import Point, Vector
-from core import Bee, Flower, BeeHive
-from engine import Scene
-
-__all__ = [Scene, Bee, Flower, BeeHive, Point, Vector]
+__all__ = ['geometry', 'core', 'engine']
