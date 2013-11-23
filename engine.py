@@ -71,21 +71,14 @@ class GameObject(ObjectToSprite):
     def _update(self):
         if self._is_moving:
             self._coord.add(self._vector)
-            if self.near(self._target_coord):
+            if self._coord.int_x < 0 or self._coord.int_x > Scene.screen_width or \
+                            self._coord.int_y < 0 or self._coord.int_y > Scene.screen_height:
+                self._coord.add(-self._vector)
+                self.stop()
+            elif self.near(self._target_coord):
                 self.stop()
                 self.on_stop_at_target(self._target)
 
-                # TODO сделать проверку на выход за границы экрана
-                #if not SCREENRECT.contains(self.rect):
-                #    if self.rect.top < SCREENRECT.top:
-                #        self.rect.top = SCREENRECT.top
-                #    if self.rect.bottom > SCREENRECT.bottom:
-                #        self.rect.bottom = SCREENRECT.bottom
-                #    if self.rect.left < SCREENRECT.left:
-                #        self.rect.left = SCREENRECT.left
-                #    if self.rect.right > SCREENRECT.right:
-                #        self.rect.right = SCREENRECT.right
-                #    self.stop()
 
 
 class Scene:

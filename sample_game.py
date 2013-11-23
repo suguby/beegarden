@@ -4,6 +4,7 @@ import random
 from core import Bee
 from engine import Scene
 from utils import random_number
+from geometry import Point
 
 
 class WorkerBee(Bee):
@@ -86,5 +87,7 @@ if __name__ == '__main__':
     count = 12
     bees = [WorkerBee() for i in range(count)]
     bees_2 = [GreedyBee() for i in range(count)]
+    bee = Bee()
+    bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
 
     scene.go()
