@@ -52,22 +52,6 @@ class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
             pygame.draw.line(self.image, (0, 255, 7), (0, 0), (load_value_px, 0), 3)
 
 
-def load_image(name, colorkey=None):
-    """Загрузить изображение из файла"""
-    fullname = os.path.join('data', name)
-    try:
-        image = pygame.image.load(fullname)
-    except pygame.error, message:
-        print "Cannot load image:", name
-        raise SystemExit(message)
-        #image = image.convert()
-    if colorkey is not None:
-        if colorkey is -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey, RLEACCEL)
-    return image
-
-
 class HoneyMeter(pygame.sprite.DirtySprite):
     """Отображение кол-ва мёда"""
     _layer = MAX_LAYERS
@@ -216,3 +200,20 @@ class GameEngine:
 
     def go(self, debug=False):
         pass
+
+
+def load_image(name, colorkey=None):
+    """Загрузить изображение из файла"""
+    fullname = os.path.join(os.path.dirname(__file__), 'data', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error, message:
+        print "Cannot load image:", name
+        raise SystemExit(message)
+    if colorkey is not None:
+        if colorkey is -1:
+            colorkey = image.get_at((0, 0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image
+
+
