@@ -166,7 +166,7 @@ class Scene:
                 max_honey = 1000
             Scene.beehives.append(BeeHive(pos=Point(90, 75), max_honey=max_honey))
             if beehives_count == 2:
-                self.beehives.append(BeeHive(pos=Point(self.resolution[0] - 90, 75), max_honey=max_honey))
+                Scene.beehives.append(BeeHive(pos=Point(self.resolution[0] - 90, 75), max_honey=max_honey))
         else:
             raise Exception("Only 2 beehives!")
 
