@@ -145,10 +145,10 @@ def random_point():
     """
         Сгенерировать случнайную точку внутри области рисования
     """
-    import user_interface
+    from user_interface import UserInterface
 
-    x = _get_random_coordinate(user_interface.SCREENRECT.width)
-    y = _get_random_coordinate(user_interface.SCREENRECT.height)
+    x = _get_random_coordinate(UserInterface.screen_width)
+    y = _get_random_coordinate(UserInterface.screen_height)
     return Point(x, y)
 
 
