@@ -79,7 +79,7 @@ class HoneyMeter(pygame.sprite.DirtySprite):
         self.color = color
         self.image = self.font.render('-', 0, self.color)
         self.rect = self.image.get_rect()
-        self.rect = self.rect.move(pos[0], UserInterface.screen_height - pos[1])
+        self.rect = self.rect.move(pos.int_x, UserInterface.screen_height - pos.int_y)
         self.value = 0.0
 
     def set_value(self, value):

@@ -63,15 +63,6 @@ class Point():
         """Представление """
         return str(self)
 
-    def __iter__(self):
-        yield self.x
-        yield self.y
-
-    def __getitem__(self, ind):
-        if ind:
-            return self.y
-        return self.x
-
     def __nonzero__(self):
         if self.x and self.y:
             return 1

@@ -150,7 +150,7 @@ class BeeHive(HoneyHolder, GameObject, BaseSprite):
         BaseSprite.__init__(self)
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, 0, max_honey)
-        self.honey_meter = HoneyMeter(pos=(pos[0] - 24, pos[1] - 37))
+        self.honey_meter = HoneyMeter(pos=Point(pos.int_x - 24, pos.int_y - 37))
         BeeHive._container.append(self)
 
     def move_at(self, target_pos):
