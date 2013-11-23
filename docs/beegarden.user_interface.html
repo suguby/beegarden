@@ -1,0 +1,586 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><title>Python: module beegarden.user_interface</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+    <tr bgcolor="#7799ee">
+        <td valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="beegarden.html"><font
+                    color="#ffffff">beegarden</font></a>.user_interface</strong></big></big></font></td
+                >
+        <td align=right valign=bottom
+                ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a
+                href="file:/home/wad/github/beegarden/user_interface.py">/home/wad/github/beegarden/user_interface.py</a></font>
+        </td>
+    </tr>
+</table>
+<p><tt>Взаимодействие&nbsp;с&nbsp;пользователем&nbsp;-&nbsp;показываем&nbsp;и&nbsp;слушаем&nbsp;ответ</tt></p>
+
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td>
+    </tr>
+
+    <tr>
+        <td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
+        <td>&nbsp;</td>
+        <td width="100%">
+            <table width="100%" summary="list">
+                <tr>
+                    <td width="25%" valign=top><a href="os.html">os</a><br>
+                    </td>
+                    <td width="25%" valign=top><a href="pygame.html">pygame</a><br>
+                    </td>
+                    <td width="25%" valign=top></td>
+                    <td width="25%" valign=top></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+    <td colspan=3 valign=bottom>&nbsp;<br>
+        <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+</tr>
+
+<tr>
+<td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
+<td>&nbsp;</td>
+<td width="100%">
+<dl>
+    <dt><font face="helvetica, arial"><a href="beegarden.common.html#ObjectToSprite">beegarden.common.ObjectToSprite</a>(<a
+            href="__builtin__.html#object">__builtin__.object</a>)
+    </font></dt>
+    <dd>
+        <dl>
+            <dt><font face="helvetica, arial"><a href="beegarden.user_interface.html#BaseSprite">BaseSprite</a>(<a
+                    href="beegarden.common.html#ObjectToSprite">beegarden.common.ObjectToSprite</a>, <a
+                    href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>)
+            </font></dt>
+        </dl>
+    </dd>
+    <dt><font face="helvetica, arial"><a href="beegarden.user_interface.html#GameEngine">GameEngine</a>
+    </font></dt>
+    <dt><font face="helvetica, arial"><a href="beegarden.user_interface.html#UserInterface">UserInterface</a>
+    </font></dt>
+    <dt><font face="helvetica, arial"><a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>(<a
+            href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a>)
+    </font></dt>
+    <dd>
+        <dl>
+            <dt><font face="helvetica, arial"><a href="beegarden.user_interface.html#BaseSprite">BaseSprite</a>(<a
+                    href="beegarden.common.html#ObjectToSprite">beegarden.common.ObjectToSprite</a>, <a
+                    href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>)
+            </font></dt>
+            <dt><font face="helvetica, arial"><a href="beegarden.user_interface.html#Fps">Fps</a>
+            </font></dt>
+            <dt><font face="helvetica, arial"><a href="beegarden.user_interface.html#HoneyMeter">HoneyMeter</a>
+            </font></dt>
+        </dl>
+    </dd>
+</dl>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="BaseSprite">class <strong>BaseSprite</strong></a>(<a
+                    href="beegarden.common.html#ObjectToSprite">beegarden.common.ObjectToSprite</a>, <a
+                    href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>)</font></td>
+    </tr>
+
+    <tr bgcolor="#ffc8d8">
+        <td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+        <td colspan=2><tt>Класс&nbsp;отображения&nbsp;объектов&nbsp;на&nbsp;экране<br>&nbsp;</tt></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td width="100%">
+            <dl>
+                <dt>Method resolution order:</dt>
+                <dd><a href="beegarden.user_interface.html#BaseSprite">BaseSprite</a></dd>
+                <dd><a href="beegarden.common.html#ObjectToSprite">beegarden.common.ObjectToSprite</a></dd>
+                <dd><a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a></dd>
+                <dd><a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a></dd>
+                <dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+            </dl>
+            <hr>
+            Methods defined here:<br>
+            <dl>
+                <dt><a name="BaseSprite-__init__"><strong>__init__</strong></a>(self)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-__repr__"><strong>__repr__</strong></a>(self)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-__str__"><strong>__str__</strong></a>(self)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-update"><strong>update</strong></a>(self)</dt>
+                <dd><tt>Внутренняя&nbsp;функция&nbsp;для&nbsp;обновления&nbsp;переменных&nbsp;отображения</tt></dd>
+            </dl>
+
+            <hr>
+            Data descriptors inherited from <a href="beegarden.common.html#ObjectToSprite">beegarden.common.ObjectToSprite</a>:<br>
+            <dl>
+                <dt><strong>__dict__</strong></dt>
+                <dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+            </dl>
+            <dl>
+                <dt><strong>__weakref__</strong></dt>
+                <dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt>
+                </dd>
+            </dl>
+            <hr>
+            Data descriptors inherited from <a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>:<br>
+            <dl>
+                <dt><strong>visible</strong></dt>
+                <dd><tt>you&nbsp;can&nbsp;make&nbsp;this&nbsp;sprite&nbsp;disappear&nbsp;without&nbsp;removing&nbsp;it&nbsp;from&nbsp;the&nbsp;group,<br>
+                    values&nbsp;0&nbsp;for&nbsp;invisible&nbsp;and&nbsp;1&nbsp;for&nbsp;visible</tt></dd>
+            </dl>
+            <hr>
+            Methods inherited from <a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a>:<br>
+            <dl>
+                <dt><a name="BaseSprite-add"><strong>add</strong></a>(self, *groups)</dt>
+                <dd><tt>add&nbsp;the&nbsp;sprite&nbsp;to&nbsp;groups<br>
+                    Sprite.<a href="#BaseSprite-add">add</a>(*groups):&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    Any&nbsp;number&nbsp;of&nbsp;Group&nbsp;instances&nbsp;can&nbsp;be&nbsp;passed&nbsp;as&nbsp;arguments.&nbsp;The&nbsp;<br>
+                    Sprite&nbsp;will&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;Groups&nbsp;it&nbsp;is&nbsp;not&nbsp;already&nbsp;a&nbsp;member&nbsp;of.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-add_internal"><strong>add_internal</strong></a>(self, group)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-alive"><strong>alive</strong></a>(self)</dt>
+                <dd><tt>does&nbsp;the&nbsp;sprite&nbsp;belong&nbsp;to&nbsp;any&nbsp;groups<br>
+                    Sprite.<a href="#BaseSprite-alive">alive</a>():&nbsp;return&nbsp;bool<br>
+                    &nbsp;<br>
+                    Returns&nbsp;True&nbsp;when&nbsp;the&nbsp;Sprite&nbsp;belongs&nbsp;to&nbsp;one&nbsp;or&nbsp;more&nbsp;Groups.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-groups"><strong>groups</strong></a>(self)</dt>
+                <dd><tt>list&nbsp;of&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;this&nbsp;Sprite<br>
+                    Sprite.<a href="#BaseSprite-groups">groups</a>():&nbsp;return&nbsp;group_list<br>
+                    &nbsp;<br>
+                    Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;the&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;this&nbsp;Sprite.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-kill"><strong>kill</strong></a>(self)</dt>
+                <dd><tt>remove&nbsp;the&nbsp;Sprite&nbsp;from&nbsp;all&nbsp;Groups<br>
+                    Sprite.<a href="#BaseSprite-kill">kill</a>():&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    The&nbsp;Sprite&nbsp;is&nbsp;removed&nbsp;from&nbsp;all&nbsp;the&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;it.&nbsp;This&nbsp;won't<br>
+                    change&nbsp;anything&nbsp;about&nbsp;the&nbsp;state&nbsp;of&nbsp;the&nbsp;Sprite.&nbsp;It&nbsp;is&nbsp;possible&nbsp;to&nbsp;continue<br>
+                    to&nbsp;use&nbsp;the&nbsp;Sprite&nbsp;after&nbsp;this&nbsp;method&nbsp;has&nbsp;been&nbsp;called,&nbsp;including&nbsp;adding&nbsp;it<br>
+                    to&nbsp;Groups.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-remove"><strong>remove</strong></a>(self, *groups)</dt>
+                <dd><tt>remove&nbsp;the&nbsp;sprite&nbsp;from&nbsp;groups<br>
+                    Sprite.<a href="#BaseSprite-remove">remove</a>(*groups):&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    Any&nbsp;number&nbsp;of&nbsp;Group&nbsp;instances&nbsp;can&nbsp;be&nbsp;passed&nbsp;as&nbsp;arguments.&nbsp;The&nbsp;Sprite&nbsp;will<br>
+                    be&nbsp;removed&nbsp;from&nbsp;the&nbsp;Groups&nbsp;it&nbsp;is&nbsp;currently&nbsp;a&nbsp;member&nbsp;of.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="BaseSprite-remove_internal"><strong>remove_internal</strong></a>(self, group)</dt>
+            </dl>
+
+        </td>
+    </tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="Fps">class <strong>Fps</strong></a>(<a
+                    href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>)</font></td>
+    </tr>
+
+    <tr bgcolor="#ffc8d8">
+        <td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+        <td colspan=2><tt>Отображение&nbsp;FPS&nbsp;игры<br>&nbsp;</tt></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td width="100%">
+            <dl>
+                <dt>Method resolution order:</dt>
+                <dd><a href="beegarden.user_interface.html#Fps">Fps</a></dd>
+                <dd><a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a></dd>
+                <dd><a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a></dd>
+                <dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+            </dl>
+            <hr>
+            Methods defined here:<br>
+            <dl>
+                <dt><a name="Fps-__init__"><strong>__init__</strong></a>(self, color<font color="#909090">=(255, 255,
+                    255)</font>)
+                </dt>
+                <dd><tt>Создать&nbsp;индикатор&nbsp;FPS</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="Fps-update"><strong>update</strong></a>(self)</dt>
+                <dd><tt>Обновить&nbsp;значение&nbsp;FPS</tt></dd>
+            </dl>
+
+            <hr>
+            Methods inherited from <a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>:<br>
+            <dl>
+                <dt><a name="Fps-__repr__"><strong>__repr__</strong></a>(self)</dt>
+            </dl>
+
+            <hr>
+            Data descriptors inherited from <a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>:<br>
+            <dl>
+                <dt><strong>visible</strong></dt>
+                <dd><tt>you&nbsp;can&nbsp;make&nbsp;this&nbsp;sprite&nbsp;disappear&nbsp;without&nbsp;removing&nbsp;it&nbsp;from&nbsp;the&nbsp;group,<br>
+                    values&nbsp;0&nbsp;for&nbsp;invisible&nbsp;and&nbsp;1&nbsp;for&nbsp;visible</tt></dd>
+            </dl>
+            <hr>
+            Methods inherited from <a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a>:<br>
+            <dl>
+                <dt><a name="Fps-add"><strong>add</strong></a>(self, *groups)</dt>
+                <dd><tt>add&nbsp;the&nbsp;sprite&nbsp;to&nbsp;groups<br>
+                    Sprite.<a href="#Fps-add">add</a>(*groups):&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    Any&nbsp;number&nbsp;of&nbsp;Group&nbsp;instances&nbsp;can&nbsp;be&nbsp;passed&nbsp;as&nbsp;arguments.&nbsp;The&nbsp;<br>
+                    Sprite&nbsp;will&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;Groups&nbsp;it&nbsp;is&nbsp;not&nbsp;already&nbsp;a&nbsp;member&nbsp;of.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="Fps-add_internal"><strong>add_internal</strong></a>(self, group)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="Fps-alive"><strong>alive</strong></a>(self)</dt>
+                <dd><tt>does&nbsp;the&nbsp;sprite&nbsp;belong&nbsp;to&nbsp;any&nbsp;groups<br>
+                    Sprite.<a href="#Fps-alive">alive</a>():&nbsp;return&nbsp;bool<br>
+                    &nbsp;<br>
+                    Returns&nbsp;True&nbsp;when&nbsp;the&nbsp;Sprite&nbsp;belongs&nbsp;to&nbsp;one&nbsp;or&nbsp;more&nbsp;Groups.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="Fps-groups"><strong>groups</strong></a>(self)</dt>
+                <dd><tt>list&nbsp;of&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;this&nbsp;Sprite<br>
+                    Sprite.<a href="#Fps-groups">groups</a>():&nbsp;return&nbsp;group_list<br>
+                    &nbsp;<br>
+                    Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;the&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;this&nbsp;Sprite.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="Fps-kill"><strong>kill</strong></a>(self)</dt>
+                <dd><tt>remove&nbsp;the&nbsp;Sprite&nbsp;from&nbsp;all&nbsp;Groups<br>
+                    Sprite.<a href="#Fps-kill">kill</a>():&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    The&nbsp;Sprite&nbsp;is&nbsp;removed&nbsp;from&nbsp;all&nbsp;the&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;it.&nbsp;This&nbsp;won't<br>
+                    change&nbsp;anything&nbsp;about&nbsp;the&nbsp;state&nbsp;of&nbsp;the&nbsp;Sprite.&nbsp;It&nbsp;is&nbsp;possible&nbsp;to&nbsp;continue<br>
+                    to&nbsp;use&nbsp;the&nbsp;Sprite&nbsp;after&nbsp;this&nbsp;method&nbsp;has&nbsp;been&nbsp;called,&nbsp;including&nbsp;adding&nbsp;it<br>
+                    to&nbsp;Groups.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="Fps-remove"><strong>remove</strong></a>(self, *groups)</dt>
+                <dd><tt>remove&nbsp;the&nbsp;sprite&nbsp;from&nbsp;groups<br>
+                    Sprite.<a href="#Fps-remove">remove</a>(*groups):&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    Any&nbsp;number&nbsp;of&nbsp;Group&nbsp;instances&nbsp;can&nbsp;be&nbsp;passed&nbsp;as&nbsp;arguments.&nbsp;The&nbsp;Sprite&nbsp;will<br>
+                    be&nbsp;removed&nbsp;from&nbsp;the&nbsp;Groups&nbsp;it&nbsp;is&nbsp;currently&nbsp;a&nbsp;member&nbsp;of.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="Fps-remove_internal"><strong>remove_internal</strong></a>(self, group)</dt>
+            </dl>
+
+            <hr>
+            Data descriptors inherited from <a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a>:<br>
+            <dl>
+                <dt><strong>__dict__</strong></dt>
+                <dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+            </dl>
+            <dl>
+                <dt><strong>__weakref__</strong></dt>
+                <dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt>
+                </dd>
+            </dl>
+        </td>
+    </tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="GameEngine">class
+                <strong>GameEngine</strong></a></font></td>
+    </tr>
+
+    <tr bgcolor="#ffc8d8">
+        <td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+        <td colspan=2><tt>Deprecated!&nbsp;Игровой&nbsp;движок.&nbsp;Выполняет&nbsp;все&nbsp;функции&nbsp;по&nbsp;отображению&nbsp;спрайтов&nbsp;и&nbsp;взаимодействия&nbsp;с&nbsp;пользователем<br>&nbsp;
+        </tt></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td width="100%">Methods defined here:<br>
+            <dl>
+                <dt><a name="GameEngine-__init__"><strong>__init__</strong></a>(self, name, background_color<font
+                        color="#909090">=None</font>, max_fps<font color="#909090">=60</font>, resolution<font
+                        color="#909090">=None</font>)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="GameEngine-go"><strong>go</strong></a>(self, debug<font color="#909090">=False</font>)</dt>
+            </dl>
+
+        </td>
+    </tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="HoneyMeter">class <strong>HoneyMeter</strong></a>(<a
+                    href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>)</font></td>
+    </tr>
+
+    <tr bgcolor="#ffc8d8">
+        <td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+        <td colspan=2><tt>Отображение&nbsp;кол-ва&nbsp;мёда<br>&nbsp;</tt></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td width="100%">
+            <dl>
+                <dt>Method resolution order:</dt>
+                <dd><a href="beegarden.user_interface.html#HoneyMeter">HoneyMeter</a></dd>
+                <dd><a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a></dd>
+                <dd><a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a></dd>
+                <dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+            </dl>
+            <hr>
+            Methods defined here:<br>
+            <dl>
+                <dt><a name="HoneyMeter-__init__"><strong>__init__</strong></a>(self, pos, color<font color="#909090">=(255,
+                    255, 0)</font>)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-set_value"><strong>set_value</strong></a>(self, value)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-update"><strong>update</strong></a>(self)</dt>
+            </dl>
+
+            <hr>
+            Methods inherited from <a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>:<br>
+            <dl>
+                <dt><a name="HoneyMeter-__repr__"><strong>__repr__</strong></a>(self)</dt>
+            </dl>
+
+            <hr>
+            Data descriptors inherited from <a href="pygame.sprite.html#DirtySprite">pygame.sprite.DirtySprite</a>:<br>
+            <dl>
+                <dt><strong>visible</strong></dt>
+                <dd><tt>you&nbsp;can&nbsp;make&nbsp;this&nbsp;sprite&nbsp;disappear&nbsp;without&nbsp;removing&nbsp;it&nbsp;from&nbsp;the&nbsp;group,<br>
+                    values&nbsp;0&nbsp;for&nbsp;invisible&nbsp;and&nbsp;1&nbsp;for&nbsp;visible</tt></dd>
+            </dl>
+            <hr>
+            Methods inherited from <a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a>:<br>
+            <dl>
+                <dt><a name="HoneyMeter-add"><strong>add</strong></a>(self, *groups)</dt>
+                <dd><tt>add&nbsp;the&nbsp;sprite&nbsp;to&nbsp;groups<br>
+                    Sprite.<a href="#HoneyMeter-add">add</a>(*groups):&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    Any&nbsp;number&nbsp;of&nbsp;Group&nbsp;instances&nbsp;can&nbsp;be&nbsp;passed&nbsp;as&nbsp;arguments.&nbsp;The&nbsp;<br>
+                    Sprite&nbsp;will&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;Groups&nbsp;it&nbsp;is&nbsp;not&nbsp;already&nbsp;a&nbsp;member&nbsp;of.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-add_internal"><strong>add_internal</strong></a>(self, group)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-alive"><strong>alive</strong></a>(self)</dt>
+                <dd><tt>does&nbsp;the&nbsp;sprite&nbsp;belong&nbsp;to&nbsp;any&nbsp;groups<br>
+                    Sprite.<a href="#HoneyMeter-alive">alive</a>():&nbsp;return&nbsp;bool<br>
+                    &nbsp;<br>
+                    Returns&nbsp;True&nbsp;when&nbsp;the&nbsp;Sprite&nbsp;belongs&nbsp;to&nbsp;one&nbsp;or&nbsp;more&nbsp;Groups.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-groups"><strong>groups</strong></a>(self)</dt>
+                <dd><tt>list&nbsp;of&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;this&nbsp;Sprite<br>
+                    Sprite.<a href="#HoneyMeter-groups">groups</a>():&nbsp;return&nbsp;group_list<br>
+                    &nbsp;<br>
+                    Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;the&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;this&nbsp;Sprite.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-kill"><strong>kill</strong></a>(self)</dt>
+                <dd><tt>remove&nbsp;the&nbsp;Sprite&nbsp;from&nbsp;all&nbsp;Groups<br>
+                    Sprite.<a href="#HoneyMeter-kill">kill</a>():&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    The&nbsp;Sprite&nbsp;is&nbsp;removed&nbsp;from&nbsp;all&nbsp;the&nbsp;Groups&nbsp;that&nbsp;contain&nbsp;it.&nbsp;This&nbsp;won't<br>
+                    change&nbsp;anything&nbsp;about&nbsp;the&nbsp;state&nbsp;of&nbsp;the&nbsp;Sprite.&nbsp;It&nbsp;is&nbsp;possible&nbsp;to&nbsp;continue<br>
+                    to&nbsp;use&nbsp;the&nbsp;Sprite&nbsp;after&nbsp;this&nbsp;method&nbsp;has&nbsp;been&nbsp;called,&nbsp;including&nbsp;adding&nbsp;it<br>
+                    to&nbsp;Groups.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-remove"><strong>remove</strong></a>(self, *groups)</dt>
+                <dd><tt>remove&nbsp;the&nbsp;sprite&nbsp;from&nbsp;groups<br>
+                    Sprite.<a href="#HoneyMeter-remove">remove</a>(*groups):&nbsp;return&nbsp;None<br>
+                    &nbsp;<br>
+                    Any&nbsp;number&nbsp;of&nbsp;Group&nbsp;instances&nbsp;can&nbsp;be&nbsp;passed&nbsp;as&nbsp;arguments.&nbsp;The&nbsp;Sprite&nbsp;will<br>
+                    be&nbsp;removed&nbsp;from&nbsp;the&nbsp;Groups&nbsp;it&nbsp;is&nbsp;currently&nbsp;a&nbsp;member&nbsp;of.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="HoneyMeter-remove_internal"><strong>remove_internal</strong></a>(self, group)</dt>
+            </dl>
+
+            <hr>
+            Data descriptors inherited from <a href="pygame.sprite.html#Sprite">pygame.sprite.Sprite</a>:<br>
+            <dl>
+                <dt><strong>__dict__</strong></dt>
+                <dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+            </dl>
+            <dl>
+                <dt><strong>__weakref__</strong></dt>
+                <dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt>
+                </dd>
+            </dl>
+        </td>
+    </tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="UserInterface">class
+                <strong>UserInterface</strong></a></font></td>
+    </tr>
+
+    <tr bgcolor="#ffc8d8">
+        <td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+        <td colspan=2><tt>Отображение&nbsp;игры:&nbsp;отображение&nbsp;спрайтов<br>
+            и&nbsp;взаимодействия&nbsp;с&nbsp;пользователем<br>&nbsp;</tt></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td width="100%">Methods defined here:<br>
+            <dl>
+                <dt><a name="UserInterface-__init__"><strong>__init__</strong></a>(self, name, background_color<font
+                        color="#909090">=None</font>, max_fps<font color="#909090">=60</font>, resolution<font
+                        color="#909090">=None</font>)
+                </dt>
+                <dd><tt>Создать&nbsp;окно&nbsp;игры.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="UserInterface-clear_screen"><strong>clear_screen</strong></a>(self)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="UserInterface-draw"><strong>draw</strong></a>(self)</dt>
+                <dd><tt>Отрисовка&nbsp;спрайтов&nbsp;на&nbsp;экране</tt></dd>
+            </dl>
+
+            <dl>
+                <dt>
+                    <a name="UserInterface-get_keyboard_and_mouse_state"><strong>get_keyboard_and_mouse_state</strong></a>(self)
+                </dt>
+            </dl>
+
+            <hr>
+            Data and other attributes defined here:<br>
+            <dl>
+                <dt><strong>screen_height</strong> = 768
+            </dl>
+
+            <dl>
+                <dt><strong>screen_width</strong> = 1024
+            </dl>
+
+        </td>
+    </tr>
+</table>
+</td>
+</tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#eeaa77">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td>
+    </tr>
+
+    <tr>
+        <td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
+        <td>&nbsp;</td>
+        <td width="100%">
+            <dl>
+                <dt><a name="-load_image"><strong>load_image</strong></a>(name, colorkey<font
+                        color="#909090">=None</font>)
+                </dt>
+                <dd><tt>Загрузить&nbsp;изображение&nbsp;из&nbsp;файла</tt></dd>
+            </dl>
+        </td>
+    </tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    <tr>
+        <td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
+        <td>&nbsp;</td>
+        <td width="100%"><strong>KEYDOWN</strong> = 2<br>
+            <strong>K_ESCAPE</strong> = 27<br>
+            <strong>K_d</strong> = 100<br>
+            <strong>K_f</strong> = 102<br>
+            <strong>K_q</strong> = 113<br>
+            <strong>K_s</strong> = 115<br>
+            <strong>QUIT</strong> = 12<br>
+            <strong>RLEACCEL</strong> = 16384<br>
+            <strong>i</strong> = 3
+        </td>
+    </tr>
+</table>
+</body>
+</html>
