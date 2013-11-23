@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import random
+from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX
 from engine import GameObject, Scene
 
 from geometry import Point
@@ -107,7 +108,7 @@ class Bee(HoneyHolder, GameObject, BaseSprite):
             else:
                 pos = self.my_beehive.coordinates.copy()
         BaseSprite.__init__(self)
-        HoneyHolder.__init__(self, honey_loaded=0, honey_max=100)
+        HoneyHolder.__init__(self, honey_loaded=0, honey_max=BEE_HONEY_MAX)
         GameObject.__init__(self, pos=pos)
         Bee._container.append(self)
 
@@ -177,7 +178,7 @@ class Flower(HoneyHolder, GameObject, BaseSprite):
                 random.randint(200, UserInterface.screen_width - 50),
                 random.randint(200, UserInterface.screen_height - 50)
             )
-        honey = random.randint(100, 200)
+        honey = random.randint(FLOWER_HONEY_MIN, FLOWER_HONEY_MAX)
         BaseSprite.__init__(self)
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, honey, honey)

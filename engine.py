@@ -8,7 +8,7 @@ from geometry import Point, Vector
 
 
 class GameObject(ObjectToSprite):
-    _default_speed = 5
+    _default_speed = 5.0
 
     coordinates = property(lambda self: self._coord)
     speed = property(lambda self: self._speed)
@@ -23,7 +23,7 @@ class GameObject(ObjectToSprite):
         self._target_coord = Point(0, 0)
         self._vector = Vector()
         self._is_moving = False
-        self._speed = float(GameObject._default_speed) - random.random()  # чуть-чуть разная скорость
+        self._speed = float(GameObject._default_speed) - random.random()  # что бы не сливались при полете к одной цели
         self.on_born()
 
     def _get_coordinates(self):
