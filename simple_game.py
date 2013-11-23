@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+"""запуск простейшей игры"""
 
-from beegarden import GameEngine, Scene  # импортируем нужное из библиотек
+from engine import Scene
 from my_bee import MyBee  # импортируем код класса пчелы
+from user_interface import GameEngine
 
 game = GameEngine("My little garden")  # создаем движок нашей игры
 scene = Scene(flowers_count=3)  # создаем нужную сцену

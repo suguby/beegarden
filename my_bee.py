@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+"""пример алгоритма пчелы"""
 
-from beegarden import Bee  # импортируем нужное из библиотек
+from core import Bee  # импортируем нужное из библиотек
+
 
 class MyBee(Bee):
     team = 1
