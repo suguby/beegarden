@@ -29,12 +29,6 @@ class GameObject(ObjectToSprite):
         GameObject._total_objects += 1
         self._id = GameObject._total_objects
 
-    #def _get_coordinates(self):
-    #    return self._coord
-    #
-    #def _get_direction(self):
-    #    return self._vector.angle
-    #
     def on_born(self):
         """Обработчик события 'рождение' """
         pass

@@ -31,9 +31,9 @@ class HoneyHolder():
         self._honey_state = 'hold'
         event()
 
-    def _update(self):
+    def _update(self, is_moving=False):
         """Внутренняя функция для обновления переменных отображения"""
-        if self.is_moving:  # TODO плохо - берется метод из соседнего класса, позднее связывание
+        if is_moving:
             self._honey_source = None
             self._honey_state = 'hold'
             return
@@ -63,9 +63,6 @@ class HoneyHolder():
             return False
         return True
 
-    #def _get_load_value(self):
-    #    return self._honey / float(self._honey_max)
-    #
     def on_honey_loaded(self):
         """Обработчик события 'мёд загружен' """
         pass
@@ -122,7 +119,7 @@ class Bee(HoneyHolder, GameObject):
 
     def _update(self):
         """Внутренняя функция для обновления переменных отображения"""
-        HoneyHolder._update(self)
+        HoneyHolder._update(self, is_moving=self.is_moving)
         GameObject._update(self)
 
     def on_stop_at_target(self, target):
@@ -165,7 +162,7 @@ class BeeHive(HoneyHolder, GameObject):
     def _update(self):
         """Внутренняя функция для обновления переменных отображения"""
         self.honey_meter.set_value(self.honey)
-        HoneyHolder._update(self)
+        HoneyHolder._update(self, is_moving=False)
         GameObject._update(self)
 
 
