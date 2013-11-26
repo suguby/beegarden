@@ -9,6 +9,7 @@ from geometry import Point, Vector
 
 class GameObject(ObjectToSprite):
     _default_speed = 5.0
+    _total_objects = 0
 
     coordinates = property(lambda self: self._coord)
     speed = property(lambda self: self._speed)
@@ -25,13 +26,15 @@ class GameObject(ObjectToSprite):
         self._is_moving = False
         self._speed = float(GameObject._default_speed) - random.random()  # что бы не сливались при полете к одной цели
         self.on_born()
+        GameObject._total_objects += 1
+        self._id = GameObject._total_objects
 
-    def _get_coordinates(self):
-        return self._coord
-
-    def _get_direction(self):
-        return self._vector.angle
-
+    #def _get_coordinates(self):
+    #    return self._coord
+    #
+    #def _get_direction(self):
+    #    return self._vector.angle
+    #
     def on_born(self):
         """Обработчик события 'рождение' """
         pass

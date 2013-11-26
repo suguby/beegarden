@@ -5,26 +5,29 @@ import random
 
 class ObjectToSprite(object):
     """
-        Интерфейс получения данных об объекте спрайтом
+        Инкапсуляция получения данных об объекте спрайтом
     """
+
+    def __init__(self, game_object):
+        self.game_object = game_object
 
     def _get_coordinates(self):
         """
             Получить координаты
         """
-        raise NotImplementedError
-
-    def _get_load_value(self):
-        """
-            Получить величену загрузки в долях единицы
-        """
-        raise NotImplementedError
+        return self.game_object._coord
 
     def _get_direction(self):
         """
             Получить направление
         """
-        raise NotImplementedError
+        return self.game_object._vector.angle
+
+    def _get_load_value(self):
+        """
+            Получить величену загрузки в долях единицы
+        """
+        return self.game_object._honey / float(self.game_object._honey_max)
 
 
 def random_number(a=0, b=300):

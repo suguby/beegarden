@@ -2,6 +2,7 @@
 """Основной модуль пасеки"""
 
 import random
+from common import ObjectToSprite
 from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX
 from engine import GameObject, Scene
 
@@ -62,9 +63,9 @@ class HoneyHolder():
             return False
         return True
 
-    def _get_load_value(self):
-        return self._honey / float(self._honey_max)
-
+    #def _get_load_value(self):
+    #    return self._honey / float(self._honey_max)
+    #
     def on_honey_loaded(self):
         """Обработчик события 'мёд загружен' """
         pass
@@ -88,10 +89,8 @@ class HoneyHolder():
         return self.honey >= self._honey_max
 
 
-class Bee(HoneyHolder, GameObject, BaseSprite):
+class Bee(HoneyHolder, GameObject):
     """Пчела. Может летать по экрану и носить мёд."""
-    _img_file_name = 'bee.png'
-    _layer = 2
     _container = []
     team = 1  # к какой команде пчел принадлежит
     my_beehive = None
@@ -107,13 +106,17 @@ class Bee(HoneyHolder, GameObject, BaseSprite):
                 pos = Point()
             else:
                 pos = self.my_beehive.coordinates.copy()
-        BaseSprite.__init__(self)
+        self._sprite = BaseSprite(
+            obj_to_sprite=ObjectToSprite(self),
+            img_file_name='bee.png',
+            layer=2
+        )
         HoneyHolder.__init__(self, honey_loaded=0, honey_max=BEE_HONEY_MAX)
         GameObject.__init__(self, pos=pos)
         Bee._container.append(self)
 
     def __str__(self):
-        return 'bee({},{}) {}'.format(self.x, self.y, BaseSprite.__str__(self))
+        return 'bee({},{}) {}'.format(self.x, self.y, self._vector)
 
     def __repr__(self):
         return str(self)
@@ -141,14 +144,16 @@ class Bee(HoneyHolder, GameObject, BaseSprite):
         pass
 
 
-class BeeHive(HoneyHolder, GameObject, BaseSprite):
+class BeeHive(HoneyHolder, GameObject):
     """Улей. Стоит там где поставили и содержит мёд."""
-    _img_file_name = 'beehive.png'
     _container = []
 
     def __init__(self, pos=None, max_honey=4000):
         """создать улей в указанной точке экрана"""
-        BaseSprite.__init__(self)
+        self._sprite = BaseSprite(
+            obj_to_sprite=ObjectToSprite(self),
+            img_file_name='beehive.png'
+        )
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, 0, max_honey)
         self.honey_meter = HoneyMeter(pos=Point(pos.int_x - 24, pos.int_y - 37))
@@ -165,9 +170,8 @@ class BeeHive(HoneyHolder, GameObject, BaseSprite):
         GameObject._update(self)
 
 
-class Flower(HoneyHolder, GameObject, BaseSprite):
+class Flower(HoneyHolder, GameObject):
     """Цветок. Источник мёда."""
-    _img_file_name = 'romashka.png'
     _container = []
 
     def __init__(self, pos=None):
@@ -179,7 +183,10 @@ class Flower(HoneyHolder, GameObject, BaseSprite):
                 random.randint(200, UserInterface.screen_height - 50)
             )
         honey = random.randint(FLOWER_HONEY_MIN, FLOWER_HONEY_MAX)
-        BaseSprite.__init__(self)
+        self._sprite = BaseSprite(
+            obj_to_sprite=ObjectToSprite(self),
+            img_file_name='romashka.png'
+        )
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, honey, honey)
         Flower._container.append(self)
@@ -187,5 +194,4 @@ class Flower(HoneyHolder, GameObject, BaseSprite):
     def move_at(self, target_pos):
         """Заглушка - цветок не может двигаться"""
         pass
-
 

@@ -10,13 +10,14 @@ _MAX_LAYERS = 3
 _SPRITES_GROUPS = [pygame.sprite.Group() for i in range(_MAX_LAYERS + 1)]
 
 
-class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
+class BaseSprite(pygame.sprite.DirtySprite):
     """Класс отображения объектов на экране"""
-    _img_file_name = 'empty.png'
-    _layer = 0
     _sprites_count = 0
 
-    def __init__(self):
+    def __init__(self, obj_to_sprite, img_file_name, layer=0):
+        self.obj_to_sprite = obj_to_sprite
+        self._img_file_name = img_file_name
+        self._layer = layer
         if self._layer > _MAX_LAYERS:
             self._layer = _MAX_LAYERS
         if self._layer < 0:
@@ -39,15 +40,15 @@ class BaseSprite(ObjectToSprite, pygame.sprite.DirtySprite):
 
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
-        direction = self._get_direction()
+        direction = self.obj_to_sprite._get_direction()
         if abs(direction) > 90:
             self.image = self._images[0].copy()
         else:
             self.image = self._images[1].copy()
 
-        self.rect.center = self._get_coordinates().to_screen(height=UserInterface.screen_height)
+        self.rect.center = self.obj_to_sprite._get_coordinates().to_screen(height=UserInterface.screen_height)
 
-        load_value = self._get_load_value()
+        load_value = self.obj_to_sprite._get_load_value()
         if load_value:
             load_value_px = int(load_value * self.rect.width)
             pygame.draw.line(self.image, (0, 255, 7), (0, 0), (load_value_px, 0), 3)
