@@ -98,8 +98,7 @@ class Bee(HoneyHolder, GameObject):
 
     def __init__(self, pos=None):
         """создать пчелу в указанной точке экрана"""
-        if self.team > 1:
-            self._img_file_name = 'bee-2.png'
+        img_file_name = 'bee.png' if self.team == 1 else 'bee-2.png'
         self.my_beehive = Scene.get_beehive(self.team)
         if pos is None:
             if self.my_beehive is None:
@@ -108,7 +107,7 @@ class Bee(HoneyHolder, GameObject):
                 pos = self.my_beehive.coordinates.copy()
         self._sprite = BaseSprite(
             obj_to_sprite=ObjectToSprite(self),
-            img_file_name='bee.png',
+            img_file_name=img_file_name,
             layer=2
         )
         HoneyHolder.__init__(self, honey_loaded=0, honey_max=BEE_HONEY_MAX)
