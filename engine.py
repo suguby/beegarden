@@ -77,18 +77,32 @@ class GameObject(ObjectToSprite):
                 self.on_stop_at_target(self._target)
 
 
+class Rect:
+
+    def __init__(self, x=0, y=0, w=10, h=10):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+    def reduce(self, dw=0, dh=0):
+        self.w -= dw
+        self.h -= dh
+
+    def shift(self, dx=0, dy=0):
+        self.x -= dx
+        self.y -= dy
+
 class Scene:
     """Сцена игры. Содержит статичные элементы"""
-    _flower_size = 100
-    _behive_size = 50
-    _flower_jitter = 0.72
     beehives = []
-    screen_width = 1024
-    screen_height = 768
+    screen_width = 1
+    screen_height = 1
 
     def __init__(self, name, flowers_count=5, beehives_count=1, speed=5, resolution=None):
         from core import Bee, BeeHive, Flower
         from user_interface import UserInterface
+        self._flower_jitter = 0.34
 
         self.bees = Bee._container
         self.beehives = BeeHive._container
@@ -106,34 +120,49 @@ class Scene:
     def _place_flowers_and_beehives(self, flowers_count, beehives_count):
         from core import Flower, BeeHive
 
-        field_width = Scene.screen_width - self._flower_size - self._behive_size
-        field_height = Scene.screen_height - self._flower_size * 2
+        flower = Rect(w=104, h=100)
+        beehive = Rect(w=150, h=117)
+        field = Rect(w=Scene.screen_width, h=Scene.screen_height)
+        field.reduce(dw=flower.w * 0.5 + beehive.w, dh=flower.h * 0.5 - beehive.h)
         if beehives_count >= 2:
-            field_width -= self._flower_size + self._behive_size
-        #if beehives_count >= 3:
-        #    field_height -= self._flower_size + self._behive_size
-        if field_width < 100 or field_height < 100:
+            field.reduce(dw=beehive.w)
+        if beehives_count >= 3:
+            field.reduce(dh=beehive.h)
+        if field.w < flower.w or field.h < flower.h:
             raise Exception("Too little field...")
 
-        cell_size = int(round(sqrt(float(field_width * field_height) / flowers_count)))
+        cell = Rect()
+        cell.h = sqrt(field.w * field.h * flower.h / float(flowers_count * flower.w))
+        cell.w = int(cell.h * flower.w / flower.h)
+        cell.h = int(cell.h)
+
         cells_in_width, cells_in_height, cells_count = 5, 5, 25
         while True:
-            cells_in_width = int(round(field_width / cell_size))
-            cells_in_height = int(round(field_height / cell_size))
+            cells_in_width = int(float(field.w) / cell.w)
+            cells_in_height = int(float(field.h) / cell.h)
             cells_count = cells_in_width * cells_in_height
             if cells_count >= flowers_count:
                 break
-            cell_size -= 1
+            dw = (float(field.w) - cells_in_width * cell.w) / cells_in_width
+            dh = (float(field.h) - cells_in_height * cell.h) / cells_in_height
+            if dw > dh:
+                cell.w -= 1
+            else:
+                cell.h -= 1
+
         cell_numbers = [i for i in range(cells_count)]
-        print cells_in_width, cells_in_height, cells_count
-        #field_width = cells_in_width * cell_size
-        #field_height = cells_in_height * cell_size
+        print cells_in_width, cells_in_height
 
-        field_x = self._behive_size * 3 # int((Scene.screen_width - field_width) / 2)
-        field_y = self._behive_size * 2 # int((Scene.screen_height - field_height) / 2)
-
-        min_random = int((1.0 - self._flower_jitter) * (cell_size / 2.0))
+        min_random = int(self._flower_jitter * cell_size / 2.0)
         max_random = cell_size - min_random
+
+        field_width = cells_in_width * cell_size + (cell_size - self.flower_width * self._flower_jitter) / 2.0
+        field_height = cells_in_height * cell_size + (cell_size - self.flower_height * self._flower_jitter) / 2.0
+        print cell_size, field_width, field_height
+
+        field_x = self.beehive_width + int((Scene.screen_width - self.beehive_width - field_width) / 2)
+        field_y = self.beehive_height + int((Scene.screen_height - self.beehive_height - field_height) / 2)
+
 
         max_honey = 0
         while len(self.flowers) < flowers_count:
