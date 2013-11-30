@@ -90,8 +90,12 @@ class Rect:
         self.h -= dh
 
     def shift(self, dx=0, dy=0):
-        self.x -= dx
-        self.y -= dy
+        self.x += dx
+        self.y += dy
+
+    def __str__(self):
+        return "{}x{} ({}, {})".format(self.w, self.h, self.x, self.y)
+
 
 class Scene:
     """Сцена игры. Содержит статичные элементы"""
@@ -102,7 +106,7 @@ class Scene:
     def __init__(self, name, flowers_count=5, beehives_count=1, speed=5, resolution=None):
         from core import Bee, BeeHive, Flower
         from user_interface import UserInterface
-        self._flower_jitter = 0.34
+        self._flower_jitter = 0.76
 
         self.bees = Bee._container
         self.beehives = BeeHive._container
@@ -120,10 +124,10 @@ class Scene:
     def _place_flowers_and_beehives(self, flowers_count, beehives_count):
         from core import Flower, BeeHive
 
-        flower = Rect(w=104, h=100)
+        flower = Rect(w=104, h=100)  # TODO получать значения из спрайтов
         beehive = Rect(w=150, h=117)
         field = Rect(w=Scene.screen_width, h=Scene.screen_height)
-        field.reduce(dw=flower.w * 0.5 + beehive.w, dh=flower.h * 0.5 - beehive.h)
+        field.reduce(dw=beehive.w, dh=beehive.h)
         if beehives_count >= 2:
             field.reduce(dw=beehive.w)
         if beehives_count >= 3:
@@ -135,6 +139,7 @@ class Scene:
         cell.h = sqrt(field.w * field.h * flower.h / float(flowers_count * flower.w))
         cell.w = int(cell.h * flower.w / flower.h)
         cell.h = int(cell.h)
+        print cell
 
         cells_in_width, cells_in_height, cells_count = 5, 5, 25
         while True:
@@ -149,30 +154,31 @@ class Scene:
                 cell.w -= 1
             else:
                 cell.h -= 1
+        print cell
 
         cell_numbers = [i for i in range(cells_count)]
         print cells_in_width, cells_in_height
 
-        min_random = int(self._flower_jitter * cell_size / 2.0)
-        max_random = cell_size - min_random
+        jit_box = Rect(w=int(cell.w * self._flower_jitter), h=int(cell.h * self._flower_jitter))
+        jit_box.shift(dx=(cell.w - jit_box.w) // 2, dy=(cell.h - jit_box.h) // 2)
 
-        field_width = cells_in_width * cell_size + (cell_size - self.flower_width * self._flower_jitter) / 2.0
-        field_height = cells_in_height * cell_size + (cell_size - self.flower_height * self._flower_jitter) / 2.0
-        print cell_size, field_width, field_height
+        field.w = cells_in_width * cell.w + jit_box.w
+        field.h = cells_in_height * cell.h + jit_box.h
 
-        field_x = self.beehive_width + int((Scene.screen_width - self.beehive_width - field_width) / 2)
-        field_y = self.beehive_height + int((Scene.screen_height - self.beehive_height - field_height) / 2)
+        field.x = beehive.w + int((Scene.screen_width - beehive.w - field.w) / 2.0) - flower.w // 2
+        field.y = beehive.h + int((Scene.screen_height - beehive.h - field.h) / 2.0) - flower.h // 2
 
+        print field
 
         max_honey = 0
         while len(self.flowers) < flowers_count:
             cell_number = random.choice(cell_numbers)
             cell_numbers.remove(cell_number)
-            cell_x = (cell_number % cells_in_width) * cell_size
-            cell_y = (cell_number // cells_in_width) * cell_size
-            dx = random.randint(min_random, max_random)
-            dy = random.randint(min_random, max_random)
-            pos = Point(field_x + cell_x + dx, field_y + cell_y + dy)
+            cell.x = (cell_number % cells_in_width) * cell.w
+            cell.y = (cell_number // cells_in_width) * cell.h
+            dx = random.randint(0, jit_box.w)
+            dy = random.randint(0, jit_box.h)
+            pos = Point(field.x + cell.x + dx, field.y + cell.y + dy)
             flower = Flower(pos)  # автоматически добавит к списку цаетов
             max_honey += flower.honey
         max_honey /= float(beehives_count)
