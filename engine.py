@@ -100,18 +100,20 @@ class Scene:
         self.hold_state = False  # режим пошаговой отладки
         self._step = 0
 
-        self._place_flowers(flowers_count)
-        self._place_beehives(beehives_count)
+        self._place_flowers_and_beehives(flowers_count, beehives_count)
         self._set_game_speed(speed)
 
-    def _place_flowers(self, flowers_count):
-        from core import Flower
+    def _place_flowers_and_beehives(self, flowers_count, beehives_count):
+        from core import Flower, BeeHive
 
-        field_width = Scene.screen_width - self._flower_size * 2
-        field_height = Scene.screen_height - self._flower_size * 2 - self._behive_size
+        field_width = Scene.screen_width - self._flower_size - self._behive_size
+        field_height = Scene.screen_height - self._flower_size * 2
+        if beehives_count >= 2:
+            field_width -= self._flower_size + self._behive_size
+        #if beehives_count >= 3:
+        #    field_height -= self._flower_size + self._behive_size
         if field_width < 100 or field_height < 100:
             raise Exception("Too little field...")
-            #        print "field", field_width, field_height
 
         cell_size = int(round(sqrt(float(field_width * field_height) / flowers_count)))
         cells_in_width, cells_in_height, cells_count = 5, 5, 25
@@ -123,18 +125,17 @@ class Scene:
                 break
             cell_size -= 1
         cell_numbers = [i for i in range(cells_count)]
-        #        print "cells: size", cell_size, "count", cells_count, "in w/h", cells_in_width, cells_in_height
+        print cells_in_width, cells_in_height, cells_count
+        #field_width = cells_in_width * cell_size
+        #field_height = cells_in_height * cell_size
 
-        field_width = cells_in_width * cell_size
-        field_height = cells_in_height * cell_size
-
-        x0 = int((Scene.screen_width - field_width) / 2)
-        y0 = int((Scene.screen_height - field_height) / 2) + self._behive_size
-        #        print "field", field_width, field_height, x0, y0
+        field_x = self._behive_size * 3 # int((Scene.screen_width - field_width) / 2)
+        field_y = self._behive_size * 2 # int((Scene.screen_height - field_height) / 2)
 
         min_random = int((1.0 - self._flower_jitter) * (cell_size / 2.0))
         max_random = cell_size - min_random
 
+        max_honey = 0
         while len(self.flowers) < flowers_count:
             cell_number = random.choice(cell_numbers)
             cell_numbers.remove(cell_number)
@@ -142,26 +143,23 @@ class Scene:
             cell_y = (cell_number // cells_in_width) * cell_size
             dx = random.randint(min_random, max_random)
             dy = random.randint(min_random, max_random)
-            pos = Point(x0 + cell_x + dx, y0 + cell_y + dy)
-            Flower(pos)  # автоматически добавит к списку цаетов
-
-    def _place_beehives(self, beehives_count):
-        from core import BeeHive
-
-        max_honey = 0
-        for flower in self.flowers:
+            pos = Point(field_x + cell_x + dx, field_y + cell_y + dy)
+            flower = Flower(pos)  # автоматически добавит к списку цаетов
             max_honey += flower.honey
-        if beehives_count in (1, 2):
-            if beehives_count == 2:
-                max_honey /= 2.0
-            max_honey = int(round((max_honey / 1000.0) * 1.3)) * 1000
-            if max_honey < 1000:
-                max_honey = 1000
-            Scene.beehives.append(BeeHive(pos=Point(90, 75), max_honey=max_honey))
-            if beehives_count == 2:
-                Scene.beehives.append(BeeHive(pos=Point(Scene.screen_width - 90, 75), max_honey=max_honey))
-        else:
-            raise Exception("Only 2 beehives!")
+        max_honey /= float(beehives_count)
+        max_honey = int(round((max_honey / 1000.0) * 1.3)) * 1000
+        if max_honey < 1000:
+            max_honey = 1000
+        for i in range(beehives_count):
+            if i == 0:
+                pos = Point(90, 75)
+            elif i == 1:
+                pos = Point(Scene.screen_width - 90, 75)
+            elif i == 2:
+                pos = Point(90, Scene.screen_height - 75)
+            else:
+                pos = Point(Scene.screen_width - 90, Scene.screen_height - 75)
+            Scene.beehives.append(BeeHive(pos=pos, max_honey=max_honey))
 
     @classmethod
     def get_beehive(cls, team):
