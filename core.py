@@ -31,11 +31,14 @@ class HoneyHolder():
         self._honey_state = 'hold'
         event()
 
+    def _stop_loading_honey(self):
+        self._honey_source = None
+        self._honey_state = 'hold'
+
     def _update(self, is_moving=False):
         """Внутренняя функция для обновления переменных отображения"""
         if is_moving:
-            self._honey_source = None
-            self._honey_state = 'hold'
+            self._stop_loading_honey()
             return
         elif self._honey_state == 'loading':
             honey = self._honey_source._get_honey()
@@ -150,6 +153,10 @@ class Bee(HoneyHolder, GameObject):
                 self.health -= BEE_STING_VALUE
                 if self.health <= 0:
                     self._death()
+
+    def _death(self):
+        self._stop_loading_honey()
+        GameObject._death(self)
 
 
 class BeeHive(HoneyHolder, GameObject):

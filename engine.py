@@ -25,10 +25,10 @@ class GameObject(ObjectToSprite):
         self._vector = Vector()
         self._is_moving = False
         self._speed = float(GameObject._default_speed) - random.random()  # что бы не сливались при полете к одной цели
+        self.state = 'alive'
         self.on_born()
         GameObject._total_objects += 1
         self._id = GameObject._total_objects
-        self.state = 'alive'
 
     def on_born(self):
         """Обработчик события 'рождение' """
@@ -40,8 +40,11 @@ class GameObject(ObjectToSprite):
 
     def move_at(self, target):
         """ Задать движение к указанной точке <объект/точка/координаты>, <скорость> """
+        if self.state != 'alive':
+            return
         if isinstance(target, Point):
             self._target_coord = target
+            self._target = target
         elif isinstance(target, GameObject):
             self._target_coord = target._coord
             self._target = target
@@ -78,7 +81,7 @@ class GameObject(ObjectToSprite):
                 self.on_stop_at_target(self._target)
 
     def _death(self):
-        self.move_at(Point(self._coord.int_x, 1))
+        self.move_at(Point(self._coord.int_x + random.randint(-27, 27), 1))
         self.state = 'dead'
 
 

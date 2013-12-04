@@ -48,11 +48,14 @@ class WorkerBee(Bee):
         self.go_next_flower()
 
     def on_stop_at_flower(self, flower):
-        self._death()
-        if flower.honey > 0:
-            self.load_honey_from(flower)
+        for bee in self.scene.bees:
+            if not isinstance(bee, self.__class__) and self.near(bee):
+                self.sting(bee)
         else:
-            self.go_next_flower()
+            if flower.honey > 0:
+                self.load_honey_from(flower)
+            else:
+                self.go_next_flower()
 
     def on_honey_loaded(self):
         self.go_next_flower()
@@ -84,6 +87,14 @@ class GreedyBee(WorkerBee):
         return random.choice(flowers_with_honey)
 
 
+class NextBee(GreedyBee):
+    team = 3
+
+
+class Next2Bee(GreedyBee):
+    team = 4
+
+
 if __name__ == '__main__':
     scene = Scene(
         name="My little garden",
@@ -94,7 +105,7 @@ if __name__ == '__main__':
     )
 
     count = 12
-    bees = [WorkerBee() for i in range(count)]
+    bees = [NextBee() for i in range(count)]
     bees_2 = [GreedyBee() for i in range(count)]
     bee = Bee()
     bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
