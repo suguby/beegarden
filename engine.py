@@ -81,7 +81,7 @@ class GameObject(ObjectToSprite):
                 self.on_stop_at_target(self._target)
 
     def _death(self):
-        self.move_at(Point(self._coord.int_x + random.randint(-27, 27), 1))
+        self.move_at(Point(self._coord.int_x + random.randint(-27, 27), random.randint(1, 27)))
         self.state = 'dead'
 
 
