@@ -48,6 +48,7 @@ class WorkerBee(Bee):
         self.go_next_flower()
 
     def on_stop_at_flower(self, flower):
+        self._death()
         if flower.honey > 0:
             self.load_honey_from(flower)
         else:
@@ -81,6 +82,7 @@ class GreedyBee(WorkerBee):
         if nearest_flower:
             return nearest_flower
         return random.choice(flowers_with_honey)
+
 
 if __name__ == '__main__':
     scene = Scene(

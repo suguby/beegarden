@@ -3,7 +3,7 @@
 
 import random
 from common import ObjectToSprite
-from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX
+from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX, BEE_HEALTH, BEE_STING_VALUE
 from engine import GameObject, Scene
 
 from geometry import Point
@@ -111,6 +111,7 @@ class Bee(HoneyHolder, GameObject):
         HoneyHolder.__init__(self, honey_loaded=0, honey_max=BEE_HONEY_MAX)
         GameObject.__init__(self, pos=pos)
         Bee._container.append(self)
+        self.health = BEE_HEALTH
 
     def __str__(self):
         return 'bee({},{}) {}'.format(self.x, self.y, self._vector)
@@ -139,6 +140,16 @@ class Bee(HoneyHolder, GameObject):
     def on_stop_at_beehive(self, beehive):
         """Обработчик события 'остановка у улья' """
         pass
+
+    def sting(self, target):
+        if self.near(target):
+            target.health -= BEE_STING_VALUE
+            if target.health <= 0:
+                target._death()
+            if not self.near(self.my_beehive, 200):
+                self.health -= BEE_STING_VALUE
+                if self.health <= 0:
+                    self._death()
 
 
 class BeeHive(HoneyHolder, GameObject):

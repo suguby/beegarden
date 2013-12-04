@@ -28,6 +28,7 @@ class GameObject(ObjectToSprite):
         self.on_born()
         GameObject._total_objects += 1
         self._id = GameObject._total_objects
+        self.state = 'alive'
 
     def on_born(self):
         """Обработчик события 'рождение' """
@@ -75,6 +76,10 @@ class GameObject(ObjectToSprite):
             elif self.near(self._target_coord):
                 self.stop()
                 self.on_stop_at_target(self._target)
+
+    def _death(self):
+        self.move_at(Point(self._coord.int_x, 1))
+        self.state = 'dead'
 
 
 class Rect:

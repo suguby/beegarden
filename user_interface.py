@@ -4,7 +4,6 @@
 import os
 import pygame
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s, K_q
-from common import ObjectToSprite
 
 _MAX_LAYERS = 3
 _SPRITES_GROUPS = [pygame.sprite.Group() for i in range(_MAX_LAYERS + 1)]
@@ -26,7 +25,11 @@ class BaseSprite(pygame.sprite.DirtySprite):
         pygame.sprite.Sprite.__init__(self, self.containers)
 
         self.image = load_image(self._img_file_name, -1)
-        self._images = [self.image, pygame.transform.flip(self.image, 1, 0)]
+        self._images = [
+            self.image,
+            pygame.transform.flip(self.image, 1, 0),
+            pygame.transform.flip(self.image, 0, 1)
+        ]
         self.rect = self.image.get_rect()
 
         BaseSprite._sprites_count += 1
@@ -41,7 +44,9 @@ class BaseSprite(pygame.sprite.DirtySprite):
     def update(self):
         """Внутренняя функция для обновления переменных отображения"""
         direction = self.obj_to_sprite._get_direction()
-        if abs(direction) > 90:
+        if self.obj_to_sprite._is_dead():
+            self.image = self._images[2].copy()
+        elif abs(direction) > 90:
             self.image = self._images[0].copy()
         else:
             self.image = self._images[1].copy()

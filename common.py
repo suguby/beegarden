@@ -29,6 +29,12 @@ class ObjectToSprite(object):
         """
         return self.game_object._honey / float(self.game_object._honey_max)
 
+    def _is_dead(self):
+        """
+            Мертв?
+        """
+        return self.game_object.state == 'dead'
+
 
 def random_number(a=0, b=300):
     """
