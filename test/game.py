@@ -85,10 +85,10 @@ class GreedyBee(WorkerBee):
 if __name__ == '__main__':
     scene = Scene(
         name="My little garden",
-        beehives_count=3,
-        flowers_count=160,
+        beehives_count=2,
+        flowers_count=60,
         speed=10,
-        # resolution=(1500, 700),
+        resolution=(1500, 700),
     )
 
     count = 12

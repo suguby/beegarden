@@ -92,6 +92,7 @@ class Bee(HoneyHolder, GameObject):
     team = 1  # к какой команде пчел принадлежит
     my_beehive = None
     flowers = []
+    scene = None  # переопределяется позже
 
     def __init__(self, pos=None):
         """создать пчелу в указанной точке экрана"""

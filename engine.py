@@ -99,7 +99,9 @@ class Rect:
 
 class Scene:
     """Сцена игры. Содержит статичные элементы"""
+    bees = []
     beehives = []
+    flowers = []
     screen_width = 1
     screen_height = 1
 
@@ -108,10 +110,11 @@ class Scene:
         from user_interface import UserInterface
         self._flower_jitter = 0.76
 
-        self.bees = Bee._container
-        self.beehives = BeeHive._container
-        self.flowers = Flower._container
-        Bee.flowers = self.flowers
+        Scene.bees = Bee._container
+        Scene.beehives = BeeHive._container
+        Scene.flowers = Flower._container
+        Bee.flowers = Scene.flowers
+        Bee.scene = self
         self.ui = UserInterface(name, resolution=resolution)
         Scene.screen_width, Scene.screen_height = UserInterface.screen_width, UserInterface.screen_height
 
@@ -208,7 +211,7 @@ class Scene:
                 pos = Point(90, Scene.screen_height - 75)
             else:
                 pos = Point(Scene.screen_width - 90, Scene.screen_height - 75)
-            Scene.beehives.append(BeeHive(pos=pos, max_honey=max_honey))
+            BeeHive(pos=pos, max_honey=max_honey)  # сам себя добавит
 
     @classmethod
     def get_beehive(cls, team):
