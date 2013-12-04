@@ -37,9 +37,8 @@ class HoneyHolder():
 
     def _update(self, is_moving=False):
         """Внутренняя функция для обновления переменных отображения"""
-        if is_moving:
+        if is_moving or (self._honey_source and not self.near(self._honey_source)):
             self._stop_loading_honey()
-            return
         elif self._honey_state == 'loading':
             honey = self._honey_source._get_honey()
             if not honey or not self._put_honey(honey):
