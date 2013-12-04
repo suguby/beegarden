@@ -3,7 +3,7 @@
 from math import sqrt
 import random
 from common import ObjectToSprite
-from constants import NEAR_RADIUS
+from constants import NEAR_RADIUS, DEBUG
 from geometry import Point, Vector
 
 
@@ -134,17 +134,20 @@ class Scene:
             field.reduce(dh=beehive.h)
         if field.w < flower.w or field.h < flower.h:
             raise Exception("Too little field...")
+        if DEBUG:
+            print "Initial field", field
 
         cell = Rect()
         cell.h = sqrt(field.w * field.h * flower.h / float(flowers_count * flower.w))
         cell.w = int(cell.h * flower.w / flower.h)
         cell.h = int(cell.h)
-        print cell
+        if DEBUG:
+            print "Initial cell", cell
 
         cells_in_width, cells_in_height, cells_count = 5, 5, 25
         while True:
-            cells_in_width = int(float(field.w) / cell.w)
-            cells_in_height = int(float(field.h) / cell.h)
+            cells_in_width = int(float(field.w) / cell.w) - 1  # еще одна ячейка на джиттер
+            cells_in_height = int(float(field.h) / cell.h) - 1
             cells_count = cells_in_width * cells_in_height
             if cells_count >= flowers_count:
                 break
@@ -154,21 +157,32 @@ class Scene:
                 cell.w -= 1
             else:
                 cell.h -= 1
-        print cell
+        if DEBUG:
+            print "Adjusted cell", cell, cells_in_width, cells_in_height
 
         cell_numbers = [i for i in range(cells_count)]
-        print cells_in_width, cells_in_height
 
         jit_box = Rect(w=int(cell.w * self._flower_jitter), h=int(cell.h * self._flower_jitter))
         jit_box.shift(dx=(cell.w - jit_box.w) // 2, dy=(cell.h - jit_box.h) // 2)
+        if DEBUG:
+            print "Jit box", jit_box
 
         field.w = cells_in_width * cell.w + jit_box.w
         field.h = cells_in_height * cell.h + jit_box.h
+        if DEBUG:
+            print "Adjusted field", field
 
-        field.x = beehive.w + int((Scene.screen_width - beehive.w - field.w) / 2.0) - flower.w // 2
-        field.y = beehive.h + int((Scene.screen_height - beehive.h - field.h) / 2.0) - flower.h // 2
+        beehives_w = beehive.w
+        beehives_h = beehive.h
+        if beehives_count >= 2:
+            beehives_w = beehive.w * 2
+        if beehives_count >= 3:
+            beehives_h = beehive.h * 2
 
-        print field
+        field.x = beehive.w + (Scene.screen_width - field.w - beehives_w) // 2.0 + flower.w // 3
+        field.y = beehive.h + (Scene.screen_height - field.h - beehives_h) // 2.0
+        if DEBUG:
+            print "Shifted field", field
 
         max_honey = 0
         while len(self.flowers) < flowers_count:
