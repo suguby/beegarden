@@ -4,7 +4,7 @@
 import os
 import pygame
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s, K_q
-from constants import BACKGROUND_COLOR, HONEY_METER_COLOR
+from constants import BACKGROUND_COLOR, HONEY_METER_COLOR, PICTURES_PATH
 
 _MAX_LAYERS = 3
 _SPRITES_GROUPS = [pygame.sprite.Group() for i in range(_MAX_LAYERS + 1)]
@@ -217,7 +217,7 @@ class GameEngine:
 
 def load_image(name, colorkey=None):
     """Загрузить изображение из файла"""
-    fullname = os.path.join(os.path.dirname(__file__), 'data', name)
+    fullname = os.path.join(PICTURES_PATH, name)
     try:
         image = pygame.image.load(fullname)
     except pygame.error, message:
