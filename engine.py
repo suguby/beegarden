@@ -113,9 +113,10 @@ class Scene:
     screen_width = 1
     screen_height = 1
 
-    def __init__(self, name, flowers_count=5, beehives_count=1, speed=5, resolution=None):
+    def __init__(self, name='Scene', flowers_count=5, beehives_count=1, speed=5, resolution=(1024, 864)):
         from core import Bee, BeeHive, Flower
         from user_interface import UserInterface
+
         self._flower_jitter = 0.76
 
         Scene.bees = Bee._container
@@ -149,9 +150,9 @@ class Scene:
             print "Initial field", field
 
         cell = Rect()
-        cell.h = sqrt(field.w * field.h * flower.h / float(flowers_count * flower.w))
-        cell.w = int(cell.h * flower.w / flower.h)
-        cell.h = int(cell.h)
+        side = sqrt(field.w * field.h * flower.h / float(flowers_count * flower.w))
+        cell.w = int(side * flower.w / flower.h)
+        cell.h = int(side)
         if DEBUG:
             print "Initial cell", cell
 
@@ -160,7 +161,7 @@ class Scene:
             cells_in_width = int(float(field.w) / cell.w) - 1  # еще одна ячейка на джиттер
             cells_in_height = int(float(field.h) / cell.h) - 1
             cells_count = cells_in_width * cells_in_height
-            if cells_count >= flowers_count:
+            if cells_count >= flowers_count or cells_in_height == 0 or cells_in_width == 0:
                 break
             dw = (float(field.w) - cells_in_width * cell.w) / cells_in_width
             dh = (float(field.h) - cells_in_height * cell.h) / cells_in_height
@@ -227,10 +228,14 @@ class Scene:
         try:
             return cls.beehives[team - 1]
         except IndexError:
-            return cls.beehives[0]
+            try:
+                return cls.beehives[0]
+            except IndexError:
+                return None
 
     def _set_game_speed(self, speed):
         from core import HoneyHolder
+
         if speed > NEAR_RADIUS:
             speed = NEAR_RADIUS
         GameObject._default_speed = speed
@@ -262,7 +267,7 @@ class Scene:
             if not self.hold_state or self.ui.one_step:
                 self._step += 1
                 self.game_step()
-                #if self.ui.debug:
+                # if self.ui.debug:
                 #    common.log.debug('=' * 20, self._step, '=' * 10)
             # отрисовка
             self.ui.draw()
