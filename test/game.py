@@ -98,15 +98,18 @@ class Next2Bee(GreedyBee):
 if __name__ == '__main__':
     scene = Scene(
         name="My little garden",
-        beehives_count=2,
-        flowers_count=30,
-        speed=10,
-        resolution=(1500, 700),
+        beehives_count=4,
+        flowers_count=15,
+        speed=5,
+        # resolution=(1500, 700),
     )
 
     count = 12
     bees = [WorkerBee() for i in range(count)]
     bees_2 = [GreedyBee() for i in range(count)]
+    bees_3 = [NextBee() for i in range(count)]
+    bees_4 = [Next2Bee() for i in range(count)]
+
     bee = Bee()
     bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
 

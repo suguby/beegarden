@@ -4,6 +4,7 @@
 import os
 import pygame
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s, K_q
+from constants import BACKGROUND_COLOR, HONEY_METER_COLOR
 
 _MAX_LAYERS = 3
 _SPRITES_GROUPS = [pygame.sprite.Group() for i in range(_MAX_LAYERS + 1)]
@@ -56,7 +57,7 @@ class BaseSprite(pygame.sprite.DirtySprite):
         load_value = self.obj_to_sprite._get_load_value()
         if load_value:
             load_value_px = int(load_value * self.rect.width)
-            pygame.draw.line(self.image, (0, 255, 7), (0, 0), (load_value_px, 0), 3)
+            pygame.draw.line(self.image, HONEY_METER_COLOR, (0, 0), (load_value_px, 0), 3)
 
 
 class HoneyMeter(pygame.sprite.DirtySprite):
@@ -122,9 +123,10 @@ class UserInterface:
 
         pygame.init()
         if background_color is None:
-            background_color = (87, 144, 40)
+            background_color = BACKGROUND_COLOR
         if resolution is None:
-            resolution = list(pygame.display.list_modes()[0])
+            resolution = [UserInterface.screen_width, UserInterface.screen_height]
+            # resolution = list(pygame.display.list_modes()[0])
             resolution[1] -= 100  # хак, что бы были видны ульи внизу экрана
         self.screen = pygame.display.set_mode(resolution)
         UserInterface.screen_width, UserInterface.screen_height = self.screen.get_size()
@@ -132,7 +134,11 @@ class UserInterface:
 
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
-        self.background.fill(background_color)
+        try:
+            image = load_image('background.jpg', -1)
+            self.background.blit(image, (0, 0))
+        except SystemExit:
+            self.background.fill(background_color)
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
 

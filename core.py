@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Основной модуль пасеки"""
+import os
 
 import random
 from common import ObjectToSprite
-from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX, BEE_HEALTH, BEE_STING_VALUE
+from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX, BEE_HEALTH, BEE_STING_VALUE, PICTURES_PATH
 from engine import GameObject, Scene
 
 from geometry import Point
@@ -98,7 +99,12 @@ class Bee(HoneyHolder, GameObject):
 
     def __init__(self, pos=None):
         """создать пчелу в указанной точке экрана"""
-        img_file_name = 'bee.png' if self.team == 1 else 'bee-2.png'
+        try:
+            img_file_name = 'bee-{}.png'.format(self.team)
+            fullname = os.path.join(PICTURES_PATH, img_file_name)
+            os.stat(fullname)
+        except OSError:
+            img_file_name = 'bee.png'
         self.my_beehive = Scene.get_beehive(self.team)
         if pos is None:
             if self.my_beehive is None:
