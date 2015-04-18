@@ -1,6 +1,5 @@
 *.py[cod]
 constants_local.py
-data_local/*
 
 # C extensions
 *.so

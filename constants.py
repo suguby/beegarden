@@ -17,7 +17,7 @@ BEE_STING_VALUE = 100
 BACKGROUND_COLOR = (87, 144, 40)
 HONEY_METER_COLOR = (0, 255, 7)
 
-PICTURES_PATH = os.path.join(os.path.dirname(__file__), 'data')
+PICTURES_PATH = os.path.join(os.path.dirname(__file__), 'themes')
 
 DEBUG = False
 
