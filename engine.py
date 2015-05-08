@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Сердце игры - тут все крутится и происходит"""
 from math import sqrt
+import os
 import random
 from common import ObjectToSprite
-from constants import NEAR_RADIUS, DEBUG
+from constants import NEAR_RADIUS, DEBUG, PICTURES_PATH
 from geometry import Point, Vector
 
 
@@ -11,6 +12,7 @@ class GameObject(ObjectToSprite):
     _default_speed = 5.0
     _total_objects = 0
 
+    scene = None  # устанавливается при генерации сцены
     coordinates = property(lambda self: self._coord)
     speed = property(lambda self: self._speed)
     course = property(lambda self: self._vector.angle)
@@ -112,18 +114,20 @@ class Scene:
     flowers = []
     screen_width = 1
     screen_height = 1
+    teams = {}
 
-    def __init__(self, name='Scene', flowers_count=5, beehives_count=1, speed=5, resolution=(1024, 864)):
+    def __init__(self, name='Scene', flowers_count=5, beehives_count=1, speed=5, resolution=(1024, 864), theme='default'):
         from core import Bee, BeeHive, Flower
         from user_interface import UserInterface
+        self.theme = theme
 
-        self._flower_jitter = 0.76
+        self._flower_jitter = 0.76  # TODO переделать на константу
 
         Scene.bees = Bee._container
         Scene.beehives = BeeHive._container
         Scene.flowers = Flower._container
         Bee.flowers = Scene.flowers
-        Bee.scene = self
+        GameObject.scene = self
         self.ui = UserInterface(name, resolution=resolution)
         Scene.screen_width, Scene.screen_height = UserInterface.screen_width, UserInterface.screen_height
 
@@ -273,3 +277,22 @@ class Scene:
             self.ui.draw()
 
         print 'Thank for playing beegarden! See you in the future :)'
+
+    @classmethod
+    def get_team(cls, klass):
+        try:
+            return cls.teams[klass.__name__]
+        except KeyError:
+            team = max(cls.teams.values()) + 1 if cls.teams else 1
+            if team > 4:
+                raise Exception("Only 4 teams! No team for {}".format(klass.__name__))
+            cls.teams[klass.__name__] = team
+            return team
+
+    def get_image_path(self, image_name):
+        fullname = os.path.join(PICTURES_PATH, self.theme, image_name)
+        try:
+            os.stat(fullname)
+        except OSError:
+            raise Exception("Can't find imagwe {}".format(fullname))
+        return fullname

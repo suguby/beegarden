@@ -92,25 +92,20 @@ class HoneyHolder():
 class Bee(HoneyHolder, GameObject):
     """Пчела. Может летать по экрану и носить мёд."""
     _container = []
-    team = 1  # к какой команде пчел принадлежит
+    team = None  # к какой команде пчел принадлежит
     my_beehive = None
     flowers = []
-    scene = None  # переопределяется позже
 
     def __init__(self, pos=None):
         """создать пчелу в указанной точке экрана"""
-        try:
-            img_file_name = 'bee-{}.png'.format(self.team)
-            fullname = os.path.join(PICTURES_PATH, img_file_name)
-            os.stat(fullname)
-        except OSError:
-            img_file_name = 'bee.png'
+        self.team = Scene.get_team(klass=self.__class__)
         self.my_beehive = Scene.get_beehive(self.team)
         if pos is None:
             if self.my_beehive is None:
                 pos = Point()
             else:
                 pos = self.my_beehive.coordinates.copy()
+        img_file_name = self.scene.get_image_path('bee-{}.png'.format(self.team))
         self._sprite = BaseSprite(
             obj_to_sprite=ObjectToSprite(self),
             img_file_name=img_file_name,
@@ -170,9 +165,10 @@ class BeeHive(HoneyHolder, GameObject):
 
     def __init__(self, pos=None, max_honey=4000):
         """создать улей в указанной точке экрана"""
+        img_file_name = self.scene.get_image_path('beehive.png')
         self._sprite = BaseSprite(
             obj_to_sprite=ObjectToSprite(self),
-            img_file_name='beehive.png'
+            img_file_name=img_file_name
         )
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, 0, max_honey)
@@ -203,9 +199,10 @@ class Flower(HoneyHolder, GameObject):
                 random.randint(200, UserInterface.screen_height - 50)
             )
         honey = random.randint(FLOWER_HONEY_MIN, FLOWER_HONEY_MAX)
+        img_file_name = self.scene.get_image_path('romashka.png')
         self._sprite = BaseSprite(
             obj_to_sprite=ObjectToSprite(self),
-            img_file_name='romashka.png'
+            img_file_name=img_file_name
         )
         GameObject.__init__(self, pos)
         HoneyHolder.__init__(self, honey, honey)

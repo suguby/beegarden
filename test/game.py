@@ -9,7 +9,6 @@ from geometry import Point
 
 
 class WorkerBee(Bee):
-    team = 1
     all_bees = []
 
     def is_other_bee_target(self, flower):
@@ -68,7 +67,6 @@ class WorkerBee(Bee):
 
 
 class GreedyBee(WorkerBee):
-    team = 2
 
     def get_nearest_flower(self):
         flowers_with_honey = [flower for flower in self.flowers if flower.honey > 0]
@@ -88,11 +86,11 @@ class GreedyBee(WorkerBee):
 
 
 class NextBee(GreedyBee):
-    team = 3
+    pass
 
 
 class Next2Bee(GreedyBee):
-    team = 4
+    pass
 
 
 if __name__ == '__main__':
@@ -102,6 +100,7 @@ if __name__ == '__main__':
         flowers_count=15,
         speed=5,
         # resolution=(1500, 700),
+        # theme='dark',
     )
 
     count = 12
@@ -110,7 +109,7 @@ if __name__ == '__main__':
     bees_3 = [NextBee() for i in range(count)]
     bees_4 = [Next2Bee() for i in range(count)]
 
-    bee = Bee()
+    bee = WorkerBee()
     bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
 
     scene.go()
