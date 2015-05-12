@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """Сердце игры - тут все крутится и происходит"""
+from importlib import import_module
 from math import sqrt
 import os
 import random
 from common import ObjectToSprite
-from constants import NEAR_RADIUS, DEBUG, PICTURES_PATH
+from constants import DEBUG
+import constants
 from geometry import Point, Vector
 
 
@@ -67,8 +69,10 @@ class GameObject(ObjectToSprite):
             return self._coord.distance_to(obj)
         raise Exception("sprite.distance_to: obj {} must be GameObject or Point!".format(obj))
 
-    def near(self, obj, radius=NEAR_RADIUS):
+    def near(self, obj, radius=None):
         """ Проверка близости к объекту <объект/точка>"""
+        if radius is None:
+            radius = self.scene.get_theme_constant('NEAR_RADIUS')
         return self.distance_to(obj) <= radius
 
     def _update(self):
@@ -119,7 +123,11 @@ class Scene:
     def __init__(self, name='Scene', flowers_count=5, beehives_count=1, speed=5, resolution=(1024, 864), theme='default'):
         from core import Bee, BeeHive, Flower
         from user_interface import UserInterface
-        self.theme = theme
+        mod_path = 'themes.{}'.format(theme)
+        try:
+            self.theme = import_module(mod_path)
+        except ImportError:
+            raise Exception("Can't load theme {}".format(theme))
 
         self._flower_jitter = 0.76  # TODO переделать на константу
 
@@ -128,6 +136,7 @@ class Scene:
         Scene.flowers = Flower._container
         Bee.flowers = Scene.flowers
         GameObject.scene = self
+        UserInterface.scene = self
         self.ui = UserInterface(name, resolution=resolution)
         Scene.screen_width, Scene.screen_height = UserInterface.screen_width, UserInterface.screen_height
 
@@ -136,6 +145,12 @@ class Scene:
 
         self._place_flowers_and_beehives(flowers_count, beehives_count)
         self._set_game_speed(speed)
+
+    def get_theme_constant(self, name):
+        try:
+            return getattr(self.theme, name)
+        except AttributeError:
+            return getattr(constants, name)
 
     def _place_flowers_and_beehives(self, flowers_count, beehives_count):
         from core import Flower, BeeHive
@@ -239,7 +254,7 @@ class Scene:
 
     def _set_game_speed(self, speed):
         from core import HoneyHolder
-
+        NEAR_RADIUS = self.get_theme_constant('NEAR_RADIUS')
         if speed > NEAR_RADIUS:
             speed = NEAR_RADIUS
         GameObject._default_speed = speed
@@ -290,9 +305,11 @@ class Scene:
             return team
 
     def get_image_path(self, image_name):
-        fullname = os.path.join(PICTURES_PATH, self.theme, image_name)
+        # TODO переделать, наворочено
+        PICTURES_PATH = self.get_theme_constant('PICTURES_PATH')
+        fullname = os.path.join(PICTURES_PATH, image_name)
         try:
             os.stat(fullname)
         except OSError:
-            raise Exception("Can't find imagwe {}".format(fullname))
+            raise Exception("Can't find image {}".format(fullname))
         return fullname

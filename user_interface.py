@@ -4,7 +4,6 @@
 import os
 import pygame
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s, K_q
-from constants import BACKGROUND_COLOR, HONEY_METER_COLOR, PICTURES_PATH
 
 _MAX_LAYERS = 3
 _SPRITES_GROUPS = [pygame.sprite.Group() for i in range(_MAX_LAYERS + 1)]
@@ -57,6 +56,7 @@ class BaseSprite(pygame.sprite.DirtySprite):
         load_value = self.obj_to_sprite._get_load_value()
         if load_value:
             load_value_px = int(load_value * self.rect.width)
+            HONEY_METER_COLOR = UserInterface.scene.get_theme_constant('HONEY_METER_COLOR')
             pygame.draw.line(self.image, HONEY_METER_COLOR, (0, 0), (load_value_px, 0), 3)
 
 
@@ -117,13 +117,14 @@ class UserInterface:
 
     screen_width = 1024
     screen_height = 768
+    scene = None  # устанавливается при генерации сцены
 
     def __init__(self, name, background_color=None, max_fps=60, resolution=None):
         """Создать окно игры. """
 
         pygame.init()
         if background_color is None:
-            background_color = BACKGROUND_COLOR
+            background_color = UserInterface.scene.get_theme_constant('BACKGROUND_COLOR')
         if resolution is None:
             resolution = [UserInterface.screen_width, UserInterface.screen_height]
             # resolution = list(pygame.display.list_modes()[0])
@@ -217,6 +218,7 @@ class GameEngine:
 
 def load_image(name, colorkey=None):
     """Загрузить изображение из файла"""
+    PICTURES_PATH = UserInterface.scene.get_theme_constant('PICTURES_PATH')
     fullname = os.path.join(PICTURES_PATH, name)
     try:
         image = pygame.image.load(fullname)

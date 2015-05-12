@@ -4,7 +4,6 @@ import os
 
 import random
 from common import ObjectToSprite
-from constants import BEE_HONEY_MAX, FLOWER_HONEY_MIN, FLOWER_HONEY_MAX, BEE_HEALTH, BEE_STING_VALUE, PICTURES_PATH
 from engine import GameObject, Scene
 
 from geometry import Point
@@ -111,10 +110,11 @@ class Bee(HoneyHolder, GameObject):
             img_file_name=img_file_name,
             layer=2
         )
-        HoneyHolder.__init__(self, honey_loaded=0, honey_max=BEE_HONEY_MAX)
+        honey_max = self.scene.get_theme_constant('BEE_HONEY_MAX')
+        HoneyHolder.__init__(self, honey_loaded=0, honey_max=honey_max)
         GameObject.__init__(self, pos=pos)
         Bee._container.append(self)
-        self.health = BEE_HEALTH
+        self.health = self.scene.get_theme_constant('BEE_HEALTH')
 
     def __str__(self):
         return 'bee({},{}) {}'.format(self.x, self.y, self._vector)
@@ -146,11 +146,12 @@ class Bee(HoneyHolder, GameObject):
 
     def sting(self, target):
         if self.near(target):
-            target.health -= BEE_STING_VALUE
+            sting_value = self.scene.get_theme_constant('BEE_STING_VALUE')
+            target.health -= sting_value
             if target.health <= 0:
                 target._death()
             if not self.near(self.my_beehive, 200):
-                self.health -= BEE_STING_VALUE
+                self.health -= sting_value
                 if self.health <= 0:
                     self._death()
 
@@ -198,6 +199,8 @@ class Flower(HoneyHolder, GameObject):
                 random.randint(200, UserInterface.screen_width - 50),
                 random.randint(200, UserInterface.screen_height - 50)
             )
+        FLOWER_HONEY_MIN = self.scene.get_theme_constant('FLOWER_HONEY_MIN')
+        FLOWER_HONEY_MAX = self.scene.get_theme_constant('FLOWER_HONEY_MAX')
         honey = random.randint(FLOWER_HONEY_MIN, FLOWER_HONEY_MAX)
         img_file_name = self.scene.get_image_path('romashka.png')
         self._sprite = BaseSprite(

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Констаны, влияющие на игру"""
+"""Константы, влияющие на игру"""
 
 import os
 
@@ -17,7 +17,7 @@ BEE_STING_VALUE = 100
 BACKGROUND_COLOR = (87, 144, 40)
 HONEY_METER_COLOR = (0, 255, 7)
 
-PICTURES_PATH = os.path.join(os.path.dirname(__file__), 'themes')
+THEMES_PATH = os.path.join(os.path.dirname(__file__), 'themes')
 
 DEBUG = False
 
@@ -25,3 +25,4 @@ try:
     from constants_local import *
 except ImportError:
     pass
+
