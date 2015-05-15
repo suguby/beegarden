@@ -136,7 +136,7 @@ class UserInterface:
         try:
             image = load_image('background.jpg', -1)
             self.background.blit(image, (0, 0))
-        except SystemExit:
+        except ImageLoadError:
             background_color = UserInterface.scene.get_theme_constant('BACKGROUND_COLOR')
             self.background.fill(background_color)
         self.screen.blit(self.background, (0, 0))
@@ -204,6 +204,8 @@ class UserInterface:
         clock.tick(self.max_fps)
         return True
 
+class ImageLoadError(Exception):
+    pass
 
 def load_image(name, colorkey=None):
     """Загрузить изображение из файла"""
@@ -212,8 +214,7 @@ def load_image(name, colorkey=None):
     try:
         image = pygame.image.load(fullname)
     except pygame.error, message:
-        print "Cannot load image:", name
-        raise SystemExit(message)
+        raise ImageLoadError("Cannot load image:".format(name))
     if colorkey is not None:
         if colorkey is -1:
             colorkey = image.get_at((0, 0))
