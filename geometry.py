@@ -9,19 +9,27 @@ from constants import NEAR_RADIUS, RANDOM_POINT_BORDER
 class Point():
     """Класс точки на экране"""
 
-    int_x = property(lambda self: round(self.x), doc="Округленная до пиксела координата X")
-    int_y = property(lambda self: round(self.y), doc="Округленная до пиксела координата Y")
-
-    def __init__(self, arg1=100, arg2=100):
+    def __init__(self, arg1=None, arg2=None):
         """Создать точку. Можно создать из другой точки, из списка/тьюпла или из конкретных координат"""
-        try:  # arg1 is Point
+        if isinstance(arg1, Point):
             self.x = arg1.x
             self.y = arg1.y
-        except AttributeError:
-            try:  # arg1 is tuple or list
-                self.x, self.y = arg1
-            except:  # arg1 & arg2 is numeric
-                self.x, self.y = arg1, arg2
+        elif isinstance(arg1, tuple) or isinstance(arg1, list) and len(arg1) == 2:
+            self.x, self.y = arg1
+        elif (isinstance(arg1, int) and isinstance(arg2, int)) or (isinstance(arg1, float) and isinstance(arg2, float)):
+            self.x, self.y = arg1, arg2
+        else:
+            raise Exception("Point() can take Point, list, int/int, float/float only!")
+
+    @property
+    def int_x(self):
+        """Округленная до пиксела координата X"""
+        return round(self.x)
+
+    @property
+    def int_y(self):
+        """Округленная до пиксела координата Y"""
+        return round(self.y)
 
     def copy(self):
         """Выдать новую точку"""
@@ -50,8 +58,8 @@ class Point():
 
     def __eq__(self, point2):
         """Сравнение двух точек на равенство целочисленных координат"""
-        #~ if point2:
-        #~ print self, point2
+        # ~ if point2:
+        # ~ print self, point2
         if self.int_x == point2.int_x and self.int_y == point2.int_y:
             return True
         return False
@@ -123,7 +131,7 @@ class Vector():
                 return 270
         else:
             angle = atan(self.dy / self.dx) * (180 / pi)
-            #print self.dx, self.dy, angle
+            # print self.dx, self.dy, angle
             if self.dx < 0:
                 angle += 180
         return angle

@@ -34,6 +34,14 @@ class GameObject(ObjectToSprite):
         GameObject._total_objects += 1
         self._id = GameObject._total_objects
 
+    @property
+    def x(self):
+        return self._coord.x
+
+    @property
+    def y(self):
+        return self._coord.y
+
     def on_born(self):
         """Обработчик события 'рождение' """
         pass
