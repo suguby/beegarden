@@ -97,10 +97,10 @@ if __name__ == '__main__':
     scene = Scene(
         name="My little garden",
         beehives_count=4,
-        flowers_count=15,
-        speed=5,
-        # resolution=(1500, 700),
-        theme='dark',
+        flowers_count=50,
+        speed=50,
+        resolution=(1200, 700),
+        # theme='dark',
     )
 
     count = 12

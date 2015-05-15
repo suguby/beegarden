@@ -119,12 +119,10 @@ class UserInterface:
     screen_height = 768
     scene = None  # устанавливается при генерации сцены
 
-    def __init__(self, name, background_color=None, max_fps=60, resolution=None):
+    def __init__(self, name, max_fps=60, resolution=None):
         """Создать окно игры. """
 
         pygame.init()
-        if background_color is None:
-            background_color = UserInterface.scene.get_theme_constant('BACKGROUND_COLOR')
         if resolution is None:
             resolution = [UserInterface.screen_width, UserInterface.screen_height]
             # resolution = list(pygame.display.list_modes()[0])
@@ -139,6 +137,7 @@ class UserInterface:
             image = load_image('background.jpg', -1)
             self.background.blit(image, (0, 0))
         except SystemExit:
+            background_color = UserInterface.scene.get_theme_constant('BACKGROUND_COLOR')
             self.background.fill(background_color)
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
@@ -204,16 +203,6 @@ class UserInterface:
         #cap the framerate
         clock.tick(self.max_fps)
         return True
-
-
-class GameEngine:
-    """Deprecated! Игровой движок. Выполняет все функции по отображению спрайтов и взаимодействия с пользователем"""
-
-    def __init__(self, name, background_color=None, max_fps=60, resolution=None):
-        pass
-
-    def go(self, debug=False):
-        pass
 
 
 def load_image(name, colorkey=None):
