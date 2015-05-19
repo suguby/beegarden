@@ -99,7 +99,7 @@ if __name__ == '__main__':
         beehives_count=4,
         flowers_count=50,
         speed=50,
-        resolution=(1200, 700),
+        resolution=(1280, 720),
         theme='dark',
     )
 
