@@ -100,7 +100,7 @@ if __name__ == '__main__':
         flowers_count=50,
         speed=50,
         resolution=(1200, 700),
-        # theme='dark',
+        theme='dark',
     )
 
     count = 12
