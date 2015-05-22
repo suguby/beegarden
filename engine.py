@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Сердце игры - тут все крутится и происходит"""
+import copy
 from importlib import import_module
 from math import sqrt
 import os
 import random
+
 from common import ObjectToSprite
 from constants import DEBUG
 import constants
@@ -125,9 +127,9 @@ class Rect:
 
 class Scene:
     """Сцена игры. Содержит статичные элементы"""
-    bees = []
-    beehives = []
-    flowers = []
+    __bees = []
+    __beehives = []
+    __flowers = []
     screen_width = 1
     screen_height = 1
     teams = {}
@@ -139,14 +141,16 @@ class Scene:
         try:
             self.theme = import_module(mod_path)
         except ImportError:
-            raise Exception("Can't load theme {}".format(theme))
+            try:
+                self.theme = import_module('beegarden.' + mod_path)
+            except ImportError:
+                raise Exception("Can't load theme {}".format(theme))
 
         self._flower_jitter = 0.76  # TODO переделать на константу
 
-        Scene.bees = Bee._container
-        Scene.beehives = BeeHive._container
-        Scene.flowers = Flower._container
-        Bee.flowers = Scene.flowers
+        Scene.__bees = Bee._container
+        Scene.__beehives = BeeHive._container
+        Scene.__flowers = Flower._container
         GameObject.scene = self
         UserInterface.scene = self
         self.ui = UserInterface(name, resolution=resolution)
@@ -157,6 +161,18 @@ class Scene:
 
         self._place_flowers_and_beehives(flowers_count, beehives_count)
         self._set_game_speed(speed)
+
+    @property
+    def bees(self):
+        return copy.copy(self.__bees)
+
+    @property
+    def flowers(self):
+        return copy.copy(self.__flowers)
+
+    @property
+    def beehives(self):
+        return copy.copy(self.__beehives)
 
     def get_theme_constant(self, name):
         try:
@@ -228,7 +244,7 @@ class Scene:
             print "Shifted field", field
 
         max_honey = 0
-        while len(self.flowers) < flowers_count:
+        while len(self.__flowers) < flowers_count:
             cell_number = random.choice(cell_numbers)
             cell_numbers.remove(cell_number)
             cell.x = (cell_number % cells_in_width) * cell.w
@@ -257,10 +273,10 @@ class Scene:
     def get_beehive(cls, team):
         # TODO сделать автоматическое распределение ульев - внизу, по кол-ву команд
         try:
-            return cls.beehives[team - 1]
+            return cls.__beehives[team - 1]
         except IndexError:
             try:
-                return cls.beehives[0]
+                return cls.__beehives[0]
             except IndexError:
                 return None
 
@@ -276,7 +292,7 @@ class Scene:
         HoneyHolder._honey_speed = honey_speed
 
     def game_step(self):
-        for obj in self.bees + self.beehives:
+        for obj in self.__bees + self.__beehives:
             obj._update()
 
     def go(self):

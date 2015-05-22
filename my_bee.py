@@ -9,7 +9,7 @@ class MyBee(Bee):
     def __init__(self):
         """ рождение пчелы """
         Bee.__init__(self)
-        self.flower = self.flowers.pop()   # выбираем нашим первый попавшийся цветок
+        self.flower = self.flowers[-1]   # выбираем нашим первый попавшийся цветок
         self.move_at(self.flower)  # летим к нему
 
     def on_stop_at_flower(self, flower):
@@ -42,5 +42,5 @@ class MyBee(Bee):
                     self.move_at(self.my_beehive)  # летим к улью
                 return   # цветов с мёдом больше нет, стоп
             else:  # остались цветы с мёдом
-                self.flower = self.flowers.pop()   # берем следующий из списка
+                self.flower = self.flowers[-1]   # берем следующий из списка
         self.move_at(self.flower)  # и летим к своему цветку

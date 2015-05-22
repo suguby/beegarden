@@ -3,6 +3,7 @@
 
 import os
 import pygame
+
 from pygame.constants import RLEACCEL, QUIT, KEYDOWN, K_ESCAPE, K_f, K_d, K_s, K_q
 
 _MAX_LAYERS = 3

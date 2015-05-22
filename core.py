@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """Основной модуль пасеки"""
-import os
 
 import random
+
 from common import ObjectToSprite
 from engine import GameObject, Scene
-
 from geometry import Point
 from user_interface import BaseSprite, HoneyMeter, UserInterface
 
@@ -93,7 +92,7 @@ class Bee(HoneyHolder, GameObject):
     _container = []
     team = None  # к какой команде пчел принадлежит
     my_beehive = None
-    flowers = []
+    _flowers = None
 
     def __init__(self, pos=None):
         """создать пчелу в указанной точке экрана"""
@@ -115,6 +114,12 @@ class Bee(HoneyHolder, GameObject):
         GameObject.__init__(self, pos=pos)
         Bee._container.append(self)
         self.health = self.scene.get_theme_constant('BEE_HEALTH')
+
+    @property
+    def flowers(self):
+        if not self._flowers:
+            self._flowers = self.scene.flowers
+        return self._flowers
 
     def __str__(self):
         return 'bee({},{}) {}'.format(self.x, self.y, self._vector)

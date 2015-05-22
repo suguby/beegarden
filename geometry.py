@@ -2,6 +2,7 @@
 """Классы точки и вектора"""
 
 from math import sqrt, pow, pi, sin, cos, atan
+
 from common import random_number
 from constants import NEAR_RADIUS, RANDOM_POINT_BORDER
 

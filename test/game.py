@@ -2,6 +2,7 @@
 """Тестовая игра"""
 
 import random
+
 from common import random_number
 from core import Bee
 from engine import Scene
@@ -100,7 +101,7 @@ if __name__ == '__main__':
         flowers_count=50,
         speed=50,
         resolution=(1280, 720),
-        theme='dark',
+        # theme='dark',
     )
 
     count = 12
