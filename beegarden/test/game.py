@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Тестовая игра"""
 import random
+
 from robogame_engine.geometry import Point
-from core import Bee, Beegarden
+
+from beegarden.core import Bee, Beegarden
 
 
 class WorkerBee(Bee):
@@ -97,10 +99,10 @@ if __name__ == '__main__':
     beegarden = Beegarden(
         name="My little garden",
         beehives_count=4,
-        flowers_count=30,
+        flowers_count=50,
         speed=3,
         # field=(800, 600),
-        theme_mod_path='themes.default',
+        theme_mod_path='beegarden.themes.default',
     )
 
     count = 10

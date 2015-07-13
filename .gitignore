@@ -1,5 +1,4 @@
 *.py[cod]
-constants_local.py
 
 # C extensions
 *.so

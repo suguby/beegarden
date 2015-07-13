@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import random
 import math
+
 from robogame_engine import GameObject, Scene
 from robogame_engine.constants import ROTATE_FLIP_VERTICAL
 from robogame_engine.geometry import Point
 from robogame_engine.states import StateMoving
 from robogame_engine.theme import theme
+
 from honey_holder import HoneyHolder
 
 
