@@ -100,7 +100,7 @@ if __name__ == '__main__':
         flowers_count=30,
         speed=3,
         # field=(800, 600),
-        theme_mod_path='themes.dark',
+        theme_mod_path='themes.default',
     )
 
     count = 10
