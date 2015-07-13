@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 """Тестовая игра"""
-
 import random
-
-from common import random_number
-from core import Bee
-from engine import Scene
-from geometry import Point
+from robogame_engine.geometry import Point
+from core import Bee, Beegarden
 
 
 class WorkerBee(Bee):
@@ -14,7 +10,7 @@ class WorkerBee(Bee):
 
     def is_other_bee_target(self, flower):
         for bee in WorkerBee.all_bees:
-            if hasattr(bee, 'flower') and bee.flower and bee.flower._id == flower._id:
+            if hasattr(bee, 'flower') and bee.flower and bee.flower.id == flower.id:
                 return True
         return False
 
@@ -40,7 +36,7 @@ class WorkerBee(Bee):
             elif self.honey > 0:
                 self.move_at(self.my_beehive)
             else:
-                i = random_number(0, len(self.flowers) - 1)
+                i = random.randint(0, len(self.flowers) - 1)
                 self.move_at(self.flowers[i])
 
     def on_born(self):
@@ -48,7 +44,7 @@ class WorkerBee(Bee):
         self.go_next_flower()
 
     def on_stop_at_flower(self, flower):
-        for bee in self.scene.bees:
+        for bee in self.bees:
             if not isinstance(bee, self.__class__) and self.near(bee):
                 self.sting(bee)
         else:
@@ -65,6 +61,9 @@ class WorkerBee(Bee):
 
     def on_honey_unloaded(self):
         self.go_next_flower()
+
+    def sting(self, bee):
+        pass
 
 
 class GreedyBee(WorkerBee):
@@ -95,17 +94,17 @@ class Next2Bee(GreedyBee):
 
 
 if __name__ == '__main__':
-    scene = Scene(
+    beegarden = Beegarden(
         name="My little garden",
         beehives_count=4,
-        flowers_count=50,
-        speed=50,
-        resolution=(1280, 720),
-        # theme='dark',
+        flowers_count=30,
+        speed=3,
+        # field=(800, 600),
+        theme_mod_path='themes.dark',
     )
 
-    count = 12
-    bees = [WorkerBee() for i in range(count)]
+    count = 10
+    bees = [WorkerBee(pos=Point(400,400)) for i in range(count)]
     bees_2 = [GreedyBee() for i in range(count)]
     bees_3 = [NextBee() for i in range(count)]
     bees_4 = [Next2Bee() for i in range(count)]
@@ -113,4 +112,4 @@ if __name__ == '__main__':
     bee = WorkerBee()
     bee.move_at(Point(1000, 1000))  # проверка на выход за границы экрана
 
-    scene.go()
+    beegarden.go()
