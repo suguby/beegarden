@@ -45,7 +45,7 @@ class Bee(HoneyHolder, GameObject, SceneObjectsGetter):
     __my_beehive = None
 
     def __init__(self, pos=None):
-        super(Bee, self).__init__(pos=self.my_beehive)
+        super(Bee, self).__init__(pos=self.my_beehive.coord)
         self.set_inital_honey(loaded=0, maximum=self._MAX_HONEY)
         self._objects_holder = self._scene
 
