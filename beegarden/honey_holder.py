@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-class HoneyHolder:
+
+class HoneyHolder(object):
     """Класс объекта, который может нести мёд"""
     _honey_speed = 1
     _honey = 0

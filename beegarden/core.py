@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import random
 import math
 
@@ -11,7 +12,7 @@ from robogame_engine.theme import theme
 from honey_holder import HoneyHolder
 
 
-class SceneObjectsGetter:
+class SceneObjectsGetter(object):
     _objects_holder = None
     __flowers = None
     __bees = None
@@ -117,7 +118,7 @@ class BeeHive(HoneyHolder, GameObject):
         return self.honey
 
 
-class Rect:
+class Rect(object):
 
     def __init__(self, x=0, y=0, w=10, h=10):
         self.x = x
@@ -167,37 +168,37 @@ class Beegarden(Scene, SceneObjectsGetter):
         if field.w < Flower.radius or field.h < Flower.radius:
             raise Exception("Too little field...")
         if theme.DEBUG:
-            print "Initial field", field
+            print("Initial field", field)
 
         cells_in_width = int(math.ceil(math.sqrt(float(field.w) / field.h * flowers_count)))
         cells_in_height = int(math.ceil(float(flowers_count) / cells_in_width))
         cells_count = cells_in_height * cells_in_width
         if theme.DEBUG:
-            print "Cells count", cells_count, cells_in_width, cells_in_height
+            print("Cells count", cells_count, cells_in_width, cells_in_height)
         if cells_count < flowers_count:
-            print u"Ну я не знаю..."
+            print(u"Ну я не знаю...")
 
         cell = Rect(w=field.w / cells_in_width, h=field.h / cells_in_height)
 
         if theme.DEBUG:
-            print "Adjusted cell", cell
+            print("Adjusted cell", cell)
 
         cell_numbers = [i for i in range(cells_count)]
 
         jit_box = Rect(w=int(cell.w * self._FLOWER_JITTER), h=int(cell.h * self._FLOWER_JITTER))
         jit_box.shift(dx=(cell.w - jit_box.w) // 2, dy=(cell.h - jit_box.h) // 2)
         if theme.DEBUG:
-            print "Jit box", jit_box
+            print("Jit box", jit_box)
 
         field.w = cells_in_width * cell.w + jit_box.w
         field.h = cells_in_height * cell.h + jit_box.h
         if theme.DEBUG:
-            print "Adjusted field", field
+            print("Adjusted field", field)
 
         field.x = BeeHive.radius * 2
         field.y = BeeHive.radius * 2
         if theme.DEBUG:
-            print "Shifted field", field
+            print("Shifted field", field)
 
         max_honey = 0
         i = 0
