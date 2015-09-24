@@ -10,8 +10,12 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='beegarden',
-    version='2.1.1',
-    packages=['beegarden'],
+    version='2.1.3',
+    packages=['beegarden', 'beegarden.themes', 'beegarden.themes.default', 'beegarden.themes.dark'],
+    package_data={
+        'beegarden.themes.default': ['*.png'],
+        'beegarden.themes.dark': ['*.png'],
+    },
     include_package_data=True,
     license='BSD License',
     description='The package allows you to create Beegarden game for programmers.',
