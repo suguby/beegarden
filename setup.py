@@ -10,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='beegarden',
-    version='2.1.3',
+    version='2.2.0',
     packages=['beegarden', 'beegarden.themes', 'beegarden.themes.default', 'beegarden.themes.dark'],
     package_data={
         'beegarden.themes.default': ['*.png'],
@@ -30,6 +30,6 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
     install_requires=[
-        'robogame_engine==0.4',
+        'robogame_engine==0.5',
     ]
 )
