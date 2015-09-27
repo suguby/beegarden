@@ -3,7 +3,7 @@ import random
 import math
 
 from robogame_engine import GameObject, Scene
-from robogame_engine.constants import ROTATE_FLIP_VERTICAL
+from robogame_engine.constants import ROTATE_FLIP_VERTICAL, ROTATE_FLIP_HORIZONTAL, ROTATE_FLIP_BOTH
 from robogame_engine.geometry import Point
 from robogame_engine.states import StateMoving
 from robogame_engine.theme import theme
@@ -43,11 +43,13 @@ class Bee(HoneyHolder, GameObject, SceneObjectsGetter):
     radius = 44
     _part_of_team = True
     __my_beehive = None
+    _dead = False
 
     def __init__(self, pos=None):
         super(Bee, self).__init__(pos=self.my_beehive.coord)
         self.set_inital_honey(loaded=0, maximum=self._MAX_HONEY)
         self._objects_holder = self._scene
+        self._health = theme.MAX_HEALTH
 
     @property
     def sprite_filename(self):
@@ -62,8 +64,14 @@ class Bee(HoneyHolder, GameObject, SceneObjectsGetter):
                 raise Exception("No beehive for {} - check beehives_count!".format(self.__class__.__name__))
         return self.__my_beehive
 
+    @property
+    def meter_2(self):
+        return float(self._health) / theme.MAX_HEALTH
+
     def game_step(self):
         super(Bee, self).game_step()
+        if not self._dead and self._health < theme.MAX_HEALTH:
+            self._health += theme.HEALTH_TOP_UP_SPEED
         self._update(is_moving=isinstance(self.state, StateMoving))
 
     def on_stop_at_target(self, target):
@@ -80,6 +88,52 @@ class Bee(HoneyHolder, GameObject, SceneObjectsGetter):
 
     def on_stop_at_beehive(self, beehive):
         pass
+
+    def sting(self, other):
+        """
+        Укусить другую пчелу
+        """
+        if self._dead:
+            return
+        if isinstance(other, Bee):
+            other.stung(self, self.__reduce_health)
+
+    def stung(self, other, flashback):
+        """
+        Принять укус, если кусающий близко.
+        Здоровье кусающего тоже уменьшается через flashback
+        """
+        if self.distance_to(other) <= theme.NEAR_RADIUS:
+            try:
+                flashback()
+                self.__reduce_health()
+            except TypeError:
+                # flashback не может быть вызвана
+                pass
+
+    def __reduce_health(self):
+        self._health -= theme.STING_POWER
+        if self._health < 0:
+            self.__die()
+
+    def __die(self):
+        self.rotate_mode = ROTATE_FLIP_BOTH
+        self.move_at(Point(x=self.x + random.randint(-20, 20), y=40 + random.randint(-10, 20)))
+        self._dead = True
+
+    @property
+    def dead(self):
+        return self._dead
+
+    def move_at(self, target, speed=3):
+        if self._dead:
+            return
+        super(Bee, self).move_at(target, speed)
+
+    def turn_to(self, target):
+        if self._dead:
+            return
+        super(Bee, self).turn_to(target)
 
 
 class Flower(HoneyHolder, GameObject):

@@ -8,10 +8,10 @@ from beegarden.core import Bee, Beegarden
 
 
 class WorkerBee(Bee):
-    all_bees = []
+    my_team_bees = []
 
     def is_other_bee_target(self, flower):
-        for bee in WorkerBee.all_bees:
+        for bee in WorkerBee.my_team_bees:
             if hasattr(bee, 'flower') and bee.flower and bee.flower.id == flower.id:
                 return True
         return False
@@ -42,18 +42,14 @@ class WorkerBee(Bee):
                 self.move_at(self.flowers[i])
 
     def on_born(self):
-        WorkerBee.all_bees.append(self)
+        WorkerBee.my_team_bees.append(self)
         self.go_next_flower()
 
     def on_stop_at_flower(self, flower):
-        for bee in self.bees:
-            if not isinstance(bee, self.__class__) and self.near(bee):
-                self.sting(bee)
+        if flower.honey > 0:
+            self.load_honey_from(flower)
         else:
-            if flower.honey > 0:
-                self.load_honey_from(flower)
-            else:
-                self.go_next_flower()
+            self.go_next_flower()
 
     def on_honey_loaded(self):
         self.go_next_flower()
@@ -63,9 +59,6 @@ class WorkerBee(Bee):
 
     def on_honey_unloaded(self):
         self.go_next_flower()
-
-    def sting(self, bee):
-        pass
 
 
 class GreedyBee(WorkerBee):
@@ -87,8 +80,51 @@ class GreedyBee(WorkerBee):
         return random.choice(flowers_with_honey)
 
 
-class NextBee(GreedyBee):
-    pass
+class HunterBee(GreedyBee):
+    _hunters = []
+    _victim = None
+
+    def on_born(self):
+        if len(HunterBee._hunters) < 3:
+            HunterBee._hunters.append(self)
+        super(HunterBee, self).on_born()
+
+    @classmethod
+    def to_hunt(cls):
+        if cls._victim:
+            can_sting = 0
+            for hunter in cls._hunters:
+                if hunter.distance_to(cls._victim) < 20:
+                    can_sting += 1
+            if can_sting == len(cls._hunters):
+                for hunter in cls._hunters:
+                    hunter.sting(cls._victim)
+                cls._victim = None
+            else:
+                for hunter in cls._hunters:
+                    hunter.move_at(cls._victim)
+        else:
+            commander = cls._hunters[0]
+            bees = [bee for bee in commander.bees if not isinstance(bee, cls) and not bee.dead]
+            for bee in bees:
+                if cls._victim is None or (commander.distance_to(bee) < commander.distance_to(cls._victim)):
+                    cls._victim = bee
+
+    def on_stop_at_flower(self, flower):
+        HunterBee.to_hunt()
+        super(HunterBee, self).on_stop_at_flower(flower)
+
+    def on_stop_at_beehive(self, beehive):
+        HunterBee.to_hunt()
+        super(HunterBee, self).on_stop_at_beehive(beehive)
+
+    def on_honey_loaded(self):
+        HunterBee.to_hunt()
+        super(HunterBee, self).on_honey_loaded()
+
+    def on_honey_unloaded(self):
+        HunterBee.to_hunt()
+        super(HunterBee, self).on_honey_unloaded()
 
 
 class Next2Bee(GreedyBee):
@@ -108,7 +144,7 @@ if __name__ == '__main__':
     count = 10
     bees = [WorkerBee(pos=Point(400,400)) for i in range(count)]
     bees_2 = [GreedyBee() for i in range(count)]
-    bees_3 = [NextBee() for i in range(count)]
+    bees_3 = [HunterBee() for i in range(count)]
     bees_4 = [Next2Bee() for i in range(count)]
 
     bee = WorkerBee()
