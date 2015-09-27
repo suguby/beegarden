@@ -2,8 +2,8 @@
 """Тестовая игра"""
 import random
 
+from robogame_engine.theme import theme
 from robogame_engine.geometry import Point
-
 from beegarden.core import Bee, Beegarden
 
 
@@ -82,7 +82,6 @@ class GreedyBee(WorkerBee):
 
 class HunterBee(GreedyBee):
     _hunters = []
-    _victim = None
 
     def on_born(self):
         if len(HunterBee._hunters) < 3:
@@ -91,31 +90,52 @@ class HunterBee(GreedyBee):
 
     @classmethod
     def to_hunt(cls):
-        if cls._victim:
+        commander = cls._hunters[0]
+        bees = [bee for bee in commander.bees if not isinstance(bee, cls) and not bee.dead and bee.honey > 0]
+        bees = [bee for bee in bees if bee.distance_to(bee.my_beehive) > theme.BEEHIVE_SAFE_DISTANCE]
+        victim = None
+        for bee in bees:
+            if victim is None or (commander.distance_to(bee) < commander.distance_to(victim)):
+                victim = bee
+        if victim:
             can_sting = 0
             for hunter in cls._hunters:
-                if hunter.distance_to(cls._victim) < 20:
+                if hunter.distance_to(victim) < theme.NEAR_RADIUS and hunter._health > theme.STING_POWER:
                     can_sting += 1
             if can_sting == len(cls._hunters):
                 for hunter in cls._hunters:
-                    hunter.sting(cls._victim)
-                cls._victim = None
+                    hunter.sting(victim)
             else:
                 for hunter in cls._hunters:
-                    hunter.move_at(cls._victim)
+                    hunter.move_at(victim)
         else:
-            commander = cls._hunters[0]
-            bees = [bee for bee in commander.bees if not isinstance(bee, cls) and not bee.dead]
-            for bee in bees:
-                if cls._victim is None or (commander.distance_to(bee) < commander.distance_to(cls._victim)):
-                    cls._victim = bee
+            bees = [bee for bee in commander.bees if not isinstance(bee, cls) and bee.dead and bee.honey > 0]
+            dead_honey = sum(bee.honey for bee in bees)
+            hunter_honey = sum(bee.honey for bee in cls._hunters)
+            hunters_capacity = sum(bee._max_honey for bee in cls._hunters)
+            if dead_honey and hunter_honey < hunters_capacity:
+                victim = None
+                for bee in bees:
+                    if victim is None or (commander.distance_to(bee) < commander.distance_to(victim)):
+                        victim = bee
+                if victim:
+                    if commander.distance_to(victim) < theme.NEAR_RADIUS:
+                        for hunter in cls._hunters:
+                            hunter.load_honey_from(victim)
+                    else:
+                        for hunter in cls._hunters:
+                            hunter.move_at(victim)
+            if not dead_honey and hunter_honey:
+                for hunter in cls._hunters:
+                    hunter.move_at(hunter.my_beehive)
 
     def on_stop_at_flower(self, flower):
         HunterBee.to_hunt()
         super(HunterBee, self).on_stop_at_flower(flower)
 
     def on_stop_at_beehive(self, beehive):
-        HunterBee.to_hunt()
+        if self not in HunterBee._hunters:
+            HunterBee.to_hunt()
         super(HunterBee, self).on_stop_at_beehive(beehive)
 
     def on_honey_loaded(self):
@@ -138,7 +158,7 @@ if __name__ == '__main__':
         flowers_count=50,
         speed=3,
         # field=(800, 600),
-        theme_mod_path='beegarden.themes.default',
+        theme_mod_path='beegarden.themes.dark',
     )
 
     count = 10

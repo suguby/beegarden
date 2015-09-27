@@ -112,9 +112,10 @@ class Bee(HoneyHolder, GameObject, SceneObjectsGetter):
                 pass
 
     def __reduce_health(self):
-        self._health -= theme.STING_POWER
-        if self._health < 0:
-            self.__die()
+        if self.distance_to(self.my_beehive) > theme.BEEHIVE_SAFE_DISTANCE:
+            self._health -= theme.STING_POWER
+            if self._health < 0:
+                self.__die()
 
     def __die(self):
         self.rotate_mode = ROTATE_FLIP_BOTH
