@@ -16,4 +16,9 @@ TEAMS_COUNT = 4
 
 DEBUG = False
 
+MAX_HEALTH = 100
+STING_POWER = 50
+HEALTH_TOP_UP_SPEED = 0.5
+BEEHIVE_SAFE_DISTANCE = 200
+
 # See robogame_engine.constants

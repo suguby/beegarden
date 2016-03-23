@@ -10,8 +10,12 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='beegarden',
-    version='2.1',
-    packages=['beegarden'],
+    version='2.2.0',
+    packages=['beegarden', 'beegarden.themes', 'beegarden.themes.default', 'beegarden.themes.dark'],
+    package_data={
+        'beegarden.themes.default': ['*.png'],
+        'beegarden.themes.dark': ['*.png'],
+    },
     include_package_data=True,
     license='BSD License',
     description='The package allows you to create Beegarden game for programmers.',
@@ -20,12 +24,12 @@ setup(
     author='Shandrinov Vadim',
     author_email='suguby@gmail.com',
     classifiers=[
-        'Development Status :: 2.0 - RC',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
     ],
     install_requires=[
-        # 'robogame_engine==git+git@github.com:suguby/robogame_engine.git#egg=0.2',
+        'robogame_engine==0.5',
     ]
 )
