@@ -159,6 +159,7 @@ if __name__ == '__main__':
         speed=3,
         # field=(800, 600),
         theme_mod_path='beegarden.themes.default',
+        # theme_mod_path='beegarden.themes.dark',
     )
 
     count = 10
