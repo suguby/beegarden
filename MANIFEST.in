@@ -1,2 +1,4 @@
 include LICENSE
 include README.rst
+include beegarden/themes/default/*.png
+include beegarden/themes/dark/*.png

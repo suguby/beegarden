@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-import random
-import math
 
+import math
+import random
+
+from beegarden.honey_holder import HoneyHolder
 from robogame_engine import GameObject, Scene
-from robogame_engine.constants import ROTATE_FLIP_VERTICAL, ROTATE_FLIP_HORIZONTAL, ROTATE_FLIP_BOTH
+from robogame_engine.constants import ROTATE_FLIP_VERTICAL, ROTATE_FLIP_BOTH
 from robogame_engine.geometry import Point
 from robogame_engine.states import StateMoving
 from robogame_engine.theme import theme
-
-from honey_holder import HoneyHolder
 
 
 class SceneObjectsGetter(object):

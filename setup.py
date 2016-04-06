@@ -10,12 +10,8 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='beegarden',
-    version='2.2.1',
-    packages=['beegarden', 'beegarden.themes', 'beegarden.themes.default', 'beegarden.themes.dark'],
-    package_data={
-        'beegarden.themes.default': ['*.png'],
-        'beegarden.themes.dark': ['*.png'],
-    },
+    version='2.2.8',
+    packages=['beegarden', ],
     include_package_data=True,
     license='BSD License',
     description='The package allows you to create Beegarden game for programmers.',
@@ -30,6 +26,6 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
     install_requires=[
-        'robogame_engine==0.5',
+        'robogame_engine==0.7.4',
     ]
 )
