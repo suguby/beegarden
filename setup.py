@@ -10,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='beegarden',
-    version='2.2.0',
+    version='2.2.1',
     packages=['beegarden', 'beegarden.themes', 'beegarden.themes.default', 'beegarden.themes.dark'],
     package_data={
         'beegarden.themes.default': ['*.png'],
