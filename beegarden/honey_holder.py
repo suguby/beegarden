@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 
 class HoneyHolder(object):
     """Класс объекта, который может нести мёд"""
@@ -27,7 +28,10 @@ class HoneyHolder(object):
     def _end_exchange(self, event):
         self._honey_source = None
         self._honey_state = 'hold'
-        event()
+        try:
+            event()
+        except Exception as exc:
+            print("Exception at {} event {} handle: {}".format(self, event, exc))
 
     def _stop_loading_honey(self):
         self._honey_source = None
