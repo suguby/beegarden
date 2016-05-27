@@ -156,7 +156,7 @@ if __name__ == '__main__':
         name="My little garden",
         beehives_count=4,
         flowers_count=50,
-        speed=3,
+        speed=100,
         # field=(800, 600),
         theme_mod_path='beegarden.themes.default',
         # theme_mod_path='beegarden.themes.dark',
