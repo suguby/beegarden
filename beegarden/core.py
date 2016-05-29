@@ -205,7 +205,7 @@ class Beegarden(Scene, SceneObjectsGetter):
             beehives_count=beehives_count,
         )
         self._objects_holder = self
-        honey_speed = int(self._max_speed * self._HONEY_SPEED_FACTOR)
+        honey_speed = int(theme.MAX_SPEED * self._HONEY_SPEED_FACTOR)
         if honey_speed < 1:
             honey_speed = 1
         HoneyHolder._honey_speed = honey_speed
